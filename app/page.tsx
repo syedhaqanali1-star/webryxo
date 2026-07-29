@@ -8,6 +8,7 @@ import {
   BadgeCheck,
   Check,
   CheckCircle2,
+  ChevronDown,
   Clock3,
   Code2,
   ExternalLink,
@@ -414,6 +415,22 @@ const pricingPlans = [
   },
 ];
 
+const processSteps = [
+  { number: "01", title: "Tell us about your business", description: "Send us your business details, goals, and what you want your website to accomplish." },
+  { number: "02", title: "We create your preview", description: "We put together a website direction so you can see what Webryxo can build for your business." },
+  { number: "03", title: "You review the design", description: "You look through the preview, give feedback, and decide whether you want to move forward." },
+  { number: "04", title: "We finish and launch", description: "Once you approve the project, we complete the website, connect the domain, and get it live." },
+];
+
+const faqs = [
+  { question: "Do I have to pay before seeing anything?", answer: "No. You can request a free website preview first. If you like the direction and want to move forward, we can continue with the paid project." },
+  { question: "Who pays for the domain?", answer: "The domain is paid separately by the client. We can help connect it to the finished website." },
+  { question: "How much is hosting and maintenance?", answer: "Hosting and maintenance are $15 per month or $150 per year." },
+  { question: "Can I request changes?", answer: "Yes. You can give feedback during the project. The exact revision scope depends on the package and project requirements." },
+  { question: "Can you redesign an existing website?", answer: "Yes. If you already have a website, Webryxo can create a more modern design and rebuild the experience around your current business needs." },
+  { question: "What if I need something more advanced?", answer: "Custom forms, booking flows, integrations, e-commerce, extra pages, and other advanced features can be quoted based on the project." },
+];
+
 const laptopImages = [
   { image: "/images/webryxo/1.jfif", href: "/work/barber" },
   { image: "/images/webryxo/2.jfif", href: "/work/auto" },
@@ -565,6 +582,14 @@ export default function Home() {
               Pricing
             </a>
 
+            <a href="#process" className="hover:text-white">
+              Process
+            </a>
+
+            <a href="#faq" className="hover:text-white">
+              FAQ
+            </a>
+
             <a href="#about" className="hover:text-white">
               Why Webryxo
             </a>
@@ -621,6 +646,14 @@ export default function Home() {
                 onClick={() => setMenuOpen(false)}
               >
                 Pricing
+              </a>
+
+              <a href="#process" onClick={() => setMenuOpen(false)}>
+                Process
+              </a>
+
+              <a href="#faq" onClick={() => setMenuOpen(false)}>
+                FAQ
               </a>
 
               <a
@@ -1207,6 +1240,67 @@ export default function Home() {
                 </div>
               );
             })}
+          </div>
+        </div>
+      </section>
+
+      {/* How It Works */}
+      <section id="process" className="relative z-10 mx-auto max-w-7xl px-6 py-32">
+        <div className="mx-auto max-w-3xl text-center">
+          <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-4 py-2 text-sm text-white/60">
+            <Rocket size={15} className="text-violet-300" /> How it works
+          </div>
+          <h2 className="mt-6 text-4xl font-semibold tracking-[-0.04em] sm:text-5xl md:text-6xl">
+            From idea to launch
+            <span className="block text-white/35">without the guesswork.</span>
+          </h2>
+          <p className="mx-auto mt-6 max-w-2xl text-lg leading-8 text-white/45">
+            A simple process designed to let you see the direction before committing to a full website project.
+          </p>
+        </div>
+        <div className="mt-16 grid gap-5 md:grid-cols-2 lg:grid-cols-4">
+          {processSteps.map((step, index) => (
+            <motion.div key={step.number} initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.5, delay: index * 0.08 }} className="rounded-[28px] border border-white/10 bg-white/[0.025] p-7">
+              <div className="flex h-11 w-11 items-center justify-center rounded-2xl border border-violet-400/20 bg-violet-500/10 text-sm font-semibold text-violet-300">{step.number}</div>
+              <h3 className="mt-7 text-xl font-medium">{step.title}</h3>
+              <p className="mt-4 leading-7 text-white/40">{step.description}</p>
+            </motion.div>
+          ))}
+        </div>
+      </section>
+
+      {/* FAQ */}
+      <section id="faq" className="relative z-10 mx-auto max-w-4xl px-6 py-32">
+        <div className="text-center">
+          <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-4 py-2 text-sm text-white/60">
+            <MessageSquare size={15} className="text-violet-300" /> Frequently asked questions
+          </div>
+          <h2 className="mt-6 text-4xl font-semibold tracking-[-0.04em] sm:text-5xl">Questions before we start?</h2>
+          <p className="mx-auto mt-5 max-w-2xl leading-7 text-white/45">Here are the details businesses usually want to know before starting a project with Webryxo.</p>
+        </div>
+        <div className="mt-12 space-y-4">
+          {faqs.map((faq) => (
+            <details key={faq.question} className="group rounded-[24px] border border-white/10 bg-white/[0.025] p-6">
+              <summary className="flex cursor-pointer list-none items-center justify-between gap-5 text-left font-medium">
+                <span>{faq.question}</span>
+                <ChevronDown size={18} className="shrink-0 text-violet-300 transition-transform duration-300 group-open:rotate-180" />
+              </summary>
+              <p className="mt-4 max-w-3xl leading-7 text-white/45">{faq.answer}</p>
+            </details>
+          ))}
+        </div>
+      </section>
+
+      {/* Final CTA */}
+      <section className="relative z-10 mx-auto max-w-7xl px-6 pb-10 pt-20">
+        <div className="relative overflow-hidden rounded-[36px] border border-violet-400/20 bg-gradient-to-br from-violet-500/[0.12] via-white/[0.03] to-fuchsia-500/[0.08] px-7 py-14 text-center sm:px-12 sm:py-16">
+          <div className="relative">
+            <Sparkles className="mx-auto text-violet-300" size={25} />
+            <h2 className="mx-auto mt-5 max-w-3xl text-4xl font-semibold tracking-[-0.04em] sm:text-5xl">See your new website before you pay.</h2>
+            <p className="mx-auto mt-5 max-w-2xl text-lg leading-8 text-white/50">Tell us about your business and request a free website preview. If you like the direction, we can take it from there.</p>
+            <a href="#contact" className="mt-8 inline-flex items-center gap-2 rounded-full bg-white px-7 py-3.5 font-medium text-black transition hover:scale-[1.03]">
+              Request My Free Preview <ArrowRight size={18} />
+            </a>
           </div>
         </div>
       </section>
