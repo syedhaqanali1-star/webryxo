@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import Image from "next/image";
 import { motion, useMotionValue, useSpring } from "framer-motion";
 import {
   ArrowRight,
@@ -365,6 +366,54 @@ const benefits = [
   },
 ];
 
+const pricingPlans = [
+  {
+    name: "Starter",
+    price: "$299",
+    description:
+      "A polished online presence for a small business that needs the essentials done right.",
+    features: [
+      "1–3 page custom website",
+      "Mobile-responsive design",
+      "Contact or inquiry form",
+      "Basic SEO foundations",
+      "Domain connection",
+      "Launch support",
+    ],
+    popular: false,
+  },
+  {
+    name: "Business",
+    price: "$499",
+    description:
+      "Our best fit for local businesses that want a stronger, more complete website.",
+    features: [
+      "Up to 5 custom pages",
+      "Premium custom design",
+      "Animations and interactions",
+      "Booking or quote sections",
+      "Basic SEO foundations",
+      "Revision round before launch",
+    ],
+    popular: true,
+  },
+  {
+    name: "Premium",
+    price: "$799+",
+    description:
+      "For businesses that need more custom pages, visuals, motion, or advanced functionality.",
+    features: [
+      "Expanded custom page count",
+      "Advanced animations or 3D",
+      "Custom forms and features",
+      "More complex booking flows",
+      "Performance optimization",
+      "Priority project support",
+    ],
+    popular: false,
+  },
+];
+
 const laptopImages = [
   { image: "/images/webryxo/1.jfif", href: "/work/barber" },
   { image: "/images/webryxo/2.jfif", href: "/work/auto" },
@@ -483,10 +532,15 @@ export default function Home() {
       <header className="sticky top-0 z-50 border-b border-white/[0.06] bg-black/60 backdrop-blur-2xl">
         <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
           <a href="#top" className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl border border-violet-400/20 bg-violet-500/10">
-              <span className="bg-gradient-to-br from-violet-300 to-fuchsia-300 bg-clip-text text-lg font-semibold text-transparent">
-                W
-              </span>
+            <div className="relative h-11 w-11 overflow-hidden rounded-xl">
+              <Image
+                src="/icon.png"
+                alt="Webryxo logo"
+                fill
+                priority
+                sizes="44px"
+                className="object-cover"
+              />
             </div>
 
             <span className="text-xl font-semibold">
@@ -505,6 +559,10 @@ export default function Home() {
 
             <a href="#work" className="hover:text-white">
               Our Work
+            </a>
+
+            <a href="#pricing" className="hover:text-white">
+              Pricing
             </a>
 
             <a href="#about" className="hover:text-white">
@@ -556,6 +614,13 @@ export default function Home() {
                 onClick={() => setMenuOpen(false)}
               >
                 Our Work
+              </a>
+
+              <a
+                href="#pricing"
+                onClick={() => setMenuOpen(false)}
+              >
+                Pricing
               </a>
 
               <a
@@ -988,6 +1053,111 @@ export default function Home() {
               </motion.article>
             );
           })}
+        </div>
+      </section>
+
+      {/* Pricing */}
+      <section
+        id="pricing"
+        className="relative z-10 mx-auto max-w-7xl px-6 py-32"
+      >
+        <div className="mx-auto max-w-3xl text-center">
+          <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-4 py-2 text-sm text-white/60">
+            <Sparkles size={15} className="text-violet-300" />
+            Simple pricing
+          </div>
+
+          <h2 className="mt-6 text-4xl font-semibold tracking-[-0.04em] sm:text-5xl md:text-6xl">
+            Pick the right website
+            <span className="block bg-gradient-to-r from-violet-300 via-fuchsia-300 to-indigo-300 bg-clip-text text-transparent">
+              for your business.
+            </span>
+          </h2>
+
+          <p className="mx-auto mt-6 max-w-2xl text-lg leading-8 text-white/45">
+            Every project starts with a free website preview. You only move
+            forward when you are happy with the direction.
+          </p>
+        </div>
+
+        <div className="mt-16 grid gap-6 lg:grid-cols-3">
+          {pricingPlans.map((plan, index) => (
+            <motion.article
+              key={plan.name}
+              initial={{ opacity: 0, y: 35 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, amount: 0.2 }}
+              transition={{ duration: 0.55, delay: index * 0.08 }}
+              whileHover={{ y: -8 }}
+              className={`relative overflow-hidden rounded-[30px] border p-7 ${
+                plan.popular
+                  ? "border-violet-400/40 bg-violet-500/[0.08]"
+                  : "border-white/10 bg-white/[0.025]"
+              }`}
+            >
+              {plan.popular && (
+                <div className="absolute right-5 top-5 rounded-full border border-violet-300/30 bg-violet-400/15 px-3 py-1 text-xs font-medium text-violet-200">
+                  Most Popular
+                </div>
+              )}
+
+              <p className="text-sm font-medium text-violet-300">{plan.name}</p>
+
+              <div className="mt-5 flex items-end gap-2">
+                <span className="text-5xl font-semibold tracking-[-0.04em]">
+                  {plan.price}
+                </span>
+                <span className="pb-1 text-sm text-white/35">one-time</span>
+              </div>
+
+              <p className="mt-5 min-h-[84px] leading-7 text-white/45">
+                {plan.description}
+              </p>
+
+              <div className="my-7 h-px bg-white/10" />
+
+              <div className="space-y-4">
+                {plan.features.map((feature) => (
+                  <div
+                    key={feature}
+                    className="flex items-start gap-3 text-sm text-white/65"
+                  >
+                    <div className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-violet-400/10">
+                      <Check size={13} className="text-violet-300" />
+                    </div>
+                    <span>{feature}</span>
+                  </div>
+                ))}
+              </div>
+
+              <a
+                href="#contact"
+                className={`mt-8 flex w-full items-center justify-center gap-2 rounded-2xl px-5 py-3.5 text-sm font-medium transition hover:scale-[1.02] ${
+                  plan.popular
+                    ? "bg-white text-black"
+                    : "border border-white/10 bg-white/[0.04] text-white"
+                }`}
+              >
+                Get a Free Website Preview
+                <ArrowRight size={16} />
+              </a>
+            </motion.article>
+          ))}
+        </div>
+
+        <div className="mt-8 grid gap-4 rounded-[28px] border border-white/10 bg-white/[0.025] p-6 text-sm text-white/50 md:grid-cols-3">
+          <div>
+            <p className="font-medium text-white">Hosting & maintenance</p>
+            <p className="mt-2">$15/month or $150/year</p>
+          </div>
+          <div>
+            <p className="font-medium text-white">Domain</p>
+            <p className="mt-2">Paid separately by the client.</p>
+          </div>
+          <div>
+            <p className="font-medium text-white">Free preview</p>
+            <p className="mt-2">$0 upfront and no commitment.</p>
+          </div>
         </div>
       </section>
 
