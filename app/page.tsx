@@ -366,12 +366,12 @@ const benefits = [
 ];
 
 const laptopImages = [
-  "/images/webryxo/1.jfif",
-  "/images/webryxo/2.jfif",
-  "/images/webryxo/3.jfif",
-  "/images/webryxo/4.jfif",
-  "/images/webryxo/5.jfif",
-  "/images/webryxo/6.jfif",
+  { image: "/images/webryxo/1.jfif", href: "/work/barber" },
+  { image: "/images/webryxo/2.jfif", href: "/work/auto" },
+  { image: "/images/webryxo/3.jfif", href: "/work/grooming" },
+  { image: "/images/webryxo/4.jfif", href: "/work/barber" },
+  { image: "/images/webryxo/5.jfif", href: "/work/auto" },
+  { image: "/images/webryxo/6.jfif", href: "/work/grooming" },
 ];
 
 /* -------------------------------------------------------------------------- */
@@ -736,9 +736,10 @@ export default function Home() {
           <div className="pointer-events-none absolute left-1/2 top-1/2 h-[600px] w-[800px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-violet-600/[0.08] blur-[150px]" />
 
           <div className="relative grid gap-7 md:grid-cols-2 lg:grid-cols-3">
-            {laptopImages.map((image, index) => (
-              <motion.div
-                key={image}
+            {laptopImages.map((item, index) => (
+              <motion.a
+                key={item.image}
+                href={item.href}
                 initial={{
                   opacity: 0,
                   y: 40,
@@ -764,7 +765,7 @@ export default function Home() {
                   rotateY:
                     index % 2 === 0 ? -2 : 2,
                 }}
-                className="group relative overflow-hidden rounded-[30px] border border-white/10 bg-white/[0.025] p-3 backdrop-blur-xl"
+                className="group relative block cursor-pointer overflow-hidden rounded-[30px] border border-white/10 bg-white/[0.025] p-3 backdrop-blur-xl"
                 style={{
                   transformStyle: "preserve-3d",
                   perspective: "1200px",
@@ -774,7 +775,7 @@ export default function Home() {
 
                 <div className="relative overflow-hidden rounded-[22px] bg-black">
                   <motion.img
-                    src={image}
+                    src={item.image}
                     alt={`Webryxo laptop website showcase ${index + 1}`}
                     className="h-[260px] w-full object-cover sm:h-[300px]"
                     whileHover={{
@@ -799,14 +800,14 @@ export default function Home() {
                     </p>
                   </div>
 
-                  <div className="flex h-9 w-9 items-center justify-center rounded-full border border-white/10 bg-white/[0.04]">
+                  <div className="flex h-9 w-9 items-center justify-center rounded-full border border-white/10 bg-white/[0.04] transition group-hover:bg-white group-hover:text-black">
                     <ExternalLink
                       size={15}
-                      className="text-white/60"
+                      className="text-white/60 transition group-hover:text-black"
                     />
                   </div>
                 </div>
-              </motion.div>
+              </motion.a>
             ))}
           </div>
         </div>
