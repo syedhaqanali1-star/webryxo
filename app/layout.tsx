@@ -12,12 +12,10 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-export const metadata = {
+export const metadata: Metadata = {
   title: "Webryxo",
-  description: "Modern websites built for businesses.",
-  icons: {
-    icon: "/icon.png",
-  },
+  description:
+    "Webryxo creates premium, modern websites built to help businesses stand out.",
 };
 
 export default function RootLayout({
@@ -30,7 +28,9 @@ export default function RootLayout({
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col">{children}</body>
+      <body className="min-h-full flex flex-col">
+        {children}
+      </body>
     </html>
   );
 }
