@@ -594,14 +594,14 @@ export default function Home() {
               Why Webryxo
             </a>
 
-            <a href="#contact" className="hover:text-white">
+            <a href="/book" className="hover:text-white">
               Contact
             </a>
           </nav>
 
           <div className="flex items-center gap-3">
             <a
-              href="#contact"
+              href="/book"
               className="hidden rounded-full bg-white px-5 py-2.5 text-sm font-medium text-black sm:inline-flex"
             >
               Start a Project
@@ -664,7 +664,7 @@ export default function Home() {
               </a>
 
               <a
-                href="#contact"
+                href="/book"
                 onClick={() => setMenuOpen(false)}
               >
                 Contact
@@ -705,7 +705,7 @@ export default function Home() {
 
           <div className="mt-10 flex flex-wrap gap-4">
             <a
-              href="#contact"
+              href="/book"
               className="group inline-flex items-center gap-2 rounded-full bg-white px-7 py-3.5 font-medium text-black transition hover:scale-[1.03]"
             >
               Get a Free Website Preview
@@ -1164,7 +1164,7 @@ export default function Home() {
               </div>
 
               <a
-                href="#contact"
+                href="/book"
                 className={`mt-8 flex w-full items-center justify-center gap-2 rounded-2xl px-5 py-3.5 text-sm font-medium transition hover:scale-[1.02] ${
                   plan.popular
                     ? "bg-white text-black"
@@ -1298,7 +1298,7 @@ export default function Home() {
             <Sparkles className="mx-auto text-violet-300" size={25} />
             <h2 className="mx-auto mt-5 max-w-3xl text-4xl font-semibold tracking-[-0.04em] sm:text-5xl">See your new website before you pay.</h2>
             <p className="mx-auto mt-5 max-w-2xl text-lg leading-8 text-white/50">Tell us about your business and request a free website preview. If you like the direction, we can take it from there.</p>
-            <a href="#contact" className="mt-8 inline-flex items-center gap-2 rounded-full bg-white px-7 py-3.5 font-medium text-black transition hover:scale-[1.03]">
+            <a href="/book" className="mt-8 inline-flex items-center gap-2 rounded-full bg-white px-7 py-3.5 font-medium text-black transition hover:scale-[1.03]">
               Request My Free Preview <ArrowRight size={18} />
             </a>
           </div>

@@ -103,7 +103,7 @@ export default function AutoDemoPage() {
             <a href="#reviews" className="transition hover:text-white">
               Reviews
             </a>
-            <a href="#contact" className="transition hover:text-white">
+            <a href="/book" className="transition hover:text-white">
               Contact
             </a>
           </nav>
