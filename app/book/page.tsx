@@ -113,6 +113,12 @@ ${description}
           project: `${selectedPackage} Package`,
           website,
           message,
+          businessType,
+          selectedPackage,
+          selectedServices,
+          budget,
+          timeline,
+          description,
         }),
       });
 
