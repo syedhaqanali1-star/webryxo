@@ -24,7 +24,7 @@ const websitePlans = [
       "SEO foundations",
       "Performance optimization",
     ],
-    checkoutUrl: "https://buy.stripe.com/test_3cI00j7Vh0w1cU00QC5kk00",
+    checkoutUrl: "https://www.paypal.com/ncp/payment/VZ3MT75J2EEGU",
   },
   {
     id: "business",
@@ -38,7 +38,7 @@ const websitePlans = [
       "Google Maps integration",
       "Analytics setup",
     ],
-    checkoutUrl: "https://buy.stripe.com/test_9B6aEX3F1ceJdY4eHs5kk01",
+    checkoutUrl: "https://www.paypal.com/ncp/payment/B7A4777WLLMUS",
     popular: true,
   },
   {
@@ -53,7 +53,7 @@ const websitePlans = [
       "Custom functionality",
       "Priority support",
     ],
-    checkoutUrl: "https://buy.stripe.com/test_3cI5kD0sP0w1g6cfLw5kk02",
+    checkoutUrl: "https://www.paypal.com/ncp/payment/X6ZAZ68LYXL3C",
   },
 ];
 
