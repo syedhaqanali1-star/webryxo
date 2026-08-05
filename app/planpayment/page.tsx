@@ -160,7 +160,7 @@ export default function PaymentPage() {
               <div className="flex gap-3">
                 <ShieldCheck size={20} className="mt-0.5 shrink-0 text-violet-300" />
                 <p className="text-sm leading-6 text-white/55">
-                  Your payment is processed securely through Stripe. After payment, you will continue to choose monthly or annual hosting.
+                  Your payment is processed securely through Paypal. After payment, you will continue to choose monthly or annual hosting.
                 </p>
               </div>
             </div>
