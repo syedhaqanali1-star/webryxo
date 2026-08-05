@@ -176,7 +176,7 @@ export default function PaymentPage() {
             </a>
 
             <p className="mt-5 text-center text-xs leading-6 text-white/30">
-              This purchased cannat be cancel or undo once you pay.
+              This purchased cannot be canceled or undone once you pay.
             </p>
           </aside>
         </div>
