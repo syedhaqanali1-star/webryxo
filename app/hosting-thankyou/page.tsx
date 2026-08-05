@@ -88,7 +88,7 @@ export default function ThankYouPage() {
         </div>
 
         <p className="mt-8 text-sm text-white/35">
-          Questions? Email us at webryxo@gmail.com or call +1 (413) 333 6029
+          Questions? Email us at support@webryxo.com or call +1 (413) 333 6029
         </p>
       </div>
     </main>
