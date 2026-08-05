@@ -176,7 +176,7 @@ export default function PaymentPage() {
             </a>
 
             <p className="mt-5 text-center text-xs leading-6 text-white/30">
-              These are Stripe test-mode links until your live Stripe account is activated.
+              This purchased cannat be cancel or undo once you pay.
             </p>
           </aside>
         </div>
