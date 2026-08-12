@@ -27,7 +27,7 @@ const packages = [
   {
     value: "Premium",
     name: "Premium",
-    price: "$799+",
+    price: "$799",
     description: "Best for custom pages, features, and advanced design.",
   },
 ];

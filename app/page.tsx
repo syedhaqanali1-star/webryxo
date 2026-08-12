@@ -1,14 +1,12 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import Image from "next/image";
 import { motion, useMotionValue, useSpring } from "framer-motion";
 import {
   ArrowRight,
   BadgeCheck,
   Check,
   CheckCircle2,
-  ChevronDown,
   Clock3,
   Code2,
   ExternalLink,
@@ -367,70 +365,6 @@ const benefits = [
   },
 ];
 
-const pricingPlans = [
-  {
-    name: "Starter",
-    price: "$299",
-    description:
-      "A polished online presence for a small business that needs the essentials done right.",
-    features: [
-      "1–3 page custom website",
-      "Mobile-responsive design",
-      "Contact or inquiry form",
-      "Basic SEO foundations",
-      "Domain connection",
-      "Launch support",
-    ],
-    popular: false,
-  },
-  {
-    name: "Business",
-    price: "$499",
-    description:
-      "Our best fit for local businesses that want a stronger, more complete website.",
-    features: [
-      "Up to 5 custom pages",
-      "Premium custom design",
-      "Animations and interactions",
-      "Booking or quote sections",
-      "Basic SEO foundations",
-      "Revision round before launch",
-    ],
-    popular: true,
-  },
-  {
-    name: "Premium",
-    price: "$799+",
-    description:
-      "For businesses that need more custom pages, visuals, motion, or advanced functionality.",
-    features: [
-      "Expanded custom page count",
-      "Advanced animations or 3D",
-      "Custom forms and features",
-      "More complex booking flows",
-      "Performance optimization",
-      "Priority project support",
-    ],
-    popular: false,
-  },
-];
-
-const processSteps = [
-  { number: "01", title: "Tell us about your business", description: "Send us your business details, goals, and what you want your website to accomplish." },
-  { number: "02", title: "We create your preview", description: "We put together a website direction so you can see what Webryxo can build for your business." },
-  { number: "03", title: "You review the design", description: "You look through the preview, give feedback, and decide whether you want to move forward." },
-  { number: "04", title: "We finish and launch", description: "Once you approve the project, we complete the website, connect the domain, and get it live." },
-];
-
-const faqs = [
-  { question: "Do I have to pay before seeing anything?", answer: "No. You can request a free website preview first. If you like the direction and want to move forward, we can continue with the paid project." },
-  { question: "Who pays for the domain?", answer: "The domain is paid separately by the client. We can help connect it to the finished website." },
-  { question: "How much is hosting and maintenance?", answer: "Hosting and maintenance are $15 per month or $150 per year." },
-  { question: "Can I request changes?", answer: "Yes. You can give feedback during the project. The exact revision scope depends on the package and project requirements." },
-  { question: "Can you redesign an existing website?", answer: "Yes. If you already have a website, Webryxo can create a more modern design and rebuild the experience around your current business needs." },
-  { question: "What if I need something more advanced?", answer: "Custom forms, booking flows, integrations, e-commerce, extra pages, and other advanced features can be quoted based on the project." },
-];
-
 const laptopImages = [
   { image: "/images/webryxo/1.jfif", href: "/work/barber" },
   { image: "/images/webryxo/2.jfif", href: "/work/auto" },
@@ -549,15 +483,10 @@ export default function Home() {
       <header className="sticky top-0 z-50 border-b border-white/[0.06] bg-black/60 backdrop-blur-2xl">
         <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
           <a href="#top" className="flex items-center gap-3">
-            <div className="relative h-11 w-11 overflow-hidden rounded-xl">
-              <Image
-                src="/icon.png"
-                alt="Webryxo logo"
-                fill
-                priority
-                sizes="44px"
-                className="object-cover"
-              />
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl border border-violet-400/20 bg-violet-500/10">
+              <span className="bg-gradient-to-br from-violet-300 to-fuchsia-300 bg-clip-text text-lg font-semibold text-transparent">
+                W
+              </span>
             </div>
 
             <span className="text-xl font-semibold">
@@ -578,30 +507,18 @@ export default function Home() {
               Our Work
             </a>
 
-            <a href="#pricing" className="hover:text-white">
-              Pricing
-            </a>
-
-            <a href="#process" className="hover:text-white">
-              Process
-            </a>
-
-            <a href="#faq" className="hover:text-white">
-              FAQ
-            </a>
-
             <a href="#about" className="hover:text-white">
               Why Webryxo
             </a>
 
-            <a href="/book" className="hover:text-white">
+            <a href="#contact" className="hover:text-white">
               Contact
             </a>
           </nav>
 
           <div className="flex items-center gap-3">
             <a
-              href="/book"
+              href="#contact"
               className="hidden rounded-full bg-white px-5 py-2.5 text-sm font-medium text-black sm:inline-flex"
             >
               Start a Project
@@ -642,21 +559,6 @@ export default function Home() {
               </a>
 
               <a
-                href="#pricing"
-                onClick={() => setMenuOpen(false)}
-              >
-                Pricing
-              </a>
-
-              <a href="#process" onClick={() => setMenuOpen(false)}>
-                Process
-              </a>
-
-              <a href="#faq" onClick={() => setMenuOpen(false)}>
-                FAQ
-              </a>
-
-              <a
                 href="#about"
                 onClick={() => setMenuOpen(false)}
               >
@@ -664,7 +566,7 @@ export default function Home() {
               </a>
 
               <a
-                href="/book"
+                href="#contact"
                 onClick={() => setMenuOpen(false)}
               >
                 Contact
@@ -705,7 +607,7 @@ export default function Home() {
 
           <div className="mt-10 flex flex-wrap gap-4">
             <a
-              href="/book"
+              href="#contact"
               className="group inline-flex items-center gap-2 rounded-full bg-white px-7 py-3.5 font-medium text-black transition hover:scale-[1.03]"
             >
               Get a Free Website Preview
@@ -1089,111 +991,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Pricing */}
-      <section
-        id="pricing"
-        className="relative z-10 mx-auto max-w-7xl px-6 py-32"
-      >
-        <div className="mx-auto max-w-3xl text-center">
-          <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-4 py-2 text-sm text-white/60">
-            <Sparkles size={15} className="text-violet-300" />
-            Simple pricing
-          </div>
-
-          <h2 className="mt-6 text-4xl font-semibold tracking-[-0.04em] sm:text-5xl md:text-6xl">
-            Pick the right website
-            <span className="block bg-gradient-to-r from-violet-300 via-fuchsia-300 to-indigo-300 bg-clip-text text-transparent">
-              for your business.
-            </span>
-          </h2>
-
-          <p className="mx-auto mt-6 max-w-2xl text-lg leading-8 text-white/45">
-            Every project starts with a free website preview. You only move
-            forward when you are happy with the direction.
-          </p>
-        </div>
-
-        <div className="mt-16 grid gap-6 lg:grid-cols-3">
-          {pricingPlans.map((plan, index) => (
-            <motion.article
-              key={plan.name}
-              initial={{ opacity: 0, y: 35 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, amount: 0.2 }}
-              transition={{ duration: 0.55, delay: index * 0.08 }}
-              whileHover={{ y: -8 }}
-              className={`relative overflow-hidden rounded-[30px] border p-7 ${
-                plan.popular
-                  ? "border-violet-400/40 bg-violet-500/[0.08]"
-                  : "border-white/10 bg-white/[0.025]"
-              }`}
-            >
-              {plan.popular && (
-                <div className="absolute right-5 top-5 rounded-full border border-violet-300/30 bg-violet-400/15 px-3 py-1 text-xs font-medium text-violet-200">
-                  Most Popular
-                </div>
-              )}
-
-              <p className="text-sm font-medium text-violet-300">{plan.name}</p>
-
-              <div className="mt-5 flex items-end gap-2">
-                <span className="text-5xl font-semibold tracking-[-0.04em]">
-                  {plan.price}
-                </span>
-                <span className="pb-1 text-sm text-white/35">one-time</span>
-              </div>
-
-              <p className="mt-5 min-h-[84px] leading-7 text-white/45">
-                {plan.description}
-              </p>
-
-              <div className="my-7 h-px bg-white/10" />
-
-              <div className="space-y-4">
-                {plan.features.map((feature) => (
-                  <div
-                    key={feature}
-                    className="flex items-start gap-3 text-sm text-white/65"
-                  >
-                    <div className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-violet-400/10">
-                      <Check size={13} className="text-violet-300" />
-                    </div>
-                    <span>{feature}</span>
-                  </div>
-                ))}
-              </div>
-
-              <a
-                href="/book"
-                className={`mt-8 flex w-full items-center justify-center gap-2 rounded-2xl px-5 py-3.5 text-sm font-medium transition hover:scale-[1.02] ${
-                  plan.popular
-                    ? "bg-white text-black"
-                    : "border border-white/10 bg-white/[0.04] text-white"
-                }`}
-              >
-                Get a Free Website Preview
-                <ArrowRight size={16} />
-              </a>
-            </motion.article>
-          ))}
-        </div>
-
-        <div className="mt-8 grid gap-4 rounded-[28px] border border-white/10 bg-white/[0.025] p-6 text-sm text-white/50 md:grid-cols-3">
-          <div>
-            <p className="font-medium text-white">Hosting & maintenance</p>
-            <p className="mt-2">$15/month or $150/year</p>
-          </div>
-          <div>
-            <p className="font-medium text-white">Domain</p>
-            <p className="mt-2">Paid separately by the client.</p>
-          </div>
-          <div>
-            <p className="font-medium text-white">Free preview</p>
-            <p className="mt-2">$0 upfront and no commitment.</p>
-          </div>
-        </div>
-      </section>
-
       {/* About */}
       <section
         id="about"
@@ -1240,67 +1037,6 @@ export default function Home() {
                 </div>
               );
             })}
-          </div>
-        </div>
-      </section>
-
-      {/* How It Works */}
-      <section id="process" className="relative z-10 mx-auto max-w-7xl px-6 py-32">
-        <div className="mx-auto max-w-3xl text-center">
-          <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-4 py-2 text-sm text-white/60">
-            <Rocket size={15} className="text-violet-300" /> How it works
-          </div>
-          <h2 className="mt-6 text-4xl font-semibold tracking-[-0.04em] sm:text-5xl md:text-6xl">
-            From idea to launch
-            <span className="block text-white/35">without the guesswork.</span>
-          </h2>
-          <p className="mx-auto mt-6 max-w-2xl text-lg leading-8 text-white/45">
-            A simple process designed to let you see the direction before committing to a full website project.
-          </p>
-        </div>
-        <div className="mt-16 grid gap-5 md:grid-cols-2 lg:grid-cols-4">
-          {processSteps.map((step, index) => (
-            <motion.div key={step.number} initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.5, delay: index * 0.08 }} className="rounded-[28px] border border-white/10 bg-white/[0.025] p-7">
-              <div className="flex h-11 w-11 items-center justify-center rounded-2xl border border-violet-400/20 bg-violet-500/10 text-sm font-semibold text-violet-300">{step.number}</div>
-              <h3 className="mt-7 text-xl font-medium">{step.title}</h3>
-              <p className="mt-4 leading-7 text-white/40">{step.description}</p>
-            </motion.div>
-          ))}
-        </div>
-      </section>
-
-      {/* FAQ */}
-      <section id="faq" className="relative z-10 mx-auto max-w-4xl px-6 py-32">
-        <div className="text-center">
-          <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-4 py-2 text-sm text-white/60">
-            <MessageSquare size={15} className="text-violet-300" /> Frequently asked questions
-          </div>
-          <h2 className="mt-6 text-4xl font-semibold tracking-[-0.04em] sm:text-5xl">Questions before we start?</h2>
-          <p className="mx-auto mt-5 max-w-2xl leading-7 text-white/45">Here are the details businesses usually want to know before starting a project with Webryxo.</p>
-        </div>
-        <div className="mt-12 space-y-4">
-          {faqs.map((faq) => (
-            <details key={faq.question} className="group rounded-[24px] border border-white/10 bg-white/[0.025] p-6">
-              <summary className="flex cursor-pointer list-none items-center justify-between gap-5 text-left font-medium">
-                <span>{faq.question}</span>
-                <ChevronDown size={18} className="shrink-0 text-violet-300 transition-transform duration-300 group-open:rotate-180" />
-              </summary>
-              <p className="mt-4 max-w-3xl leading-7 text-white/45">{faq.answer}</p>
-            </details>
-          ))}
-        </div>
-      </section>
-
-      {/* Final CTA */}
-      <section className="relative z-10 mx-auto max-w-7xl px-6 pb-10 pt-20">
-        <div className="relative overflow-hidden rounded-[36px] border border-violet-400/20 bg-gradient-to-br from-violet-500/[0.12] via-white/[0.03] to-fuchsia-500/[0.08] px-7 py-14 text-center sm:px-12 sm:py-16">
-          <div className="relative">
-            <Sparkles className="mx-auto text-violet-300" size={25} />
-            <h2 className="mx-auto mt-5 max-w-3xl text-4xl font-semibold tracking-[-0.04em] sm:text-5xl">See your new website before you pay.</h2>
-            <p className="mx-auto mt-5 max-w-2xl text-lg leading-8 text-white/50">Tell us about your business and request a free website preview. If you like the direction, we can take it from there.</p>
-            <a href="/book" className="mt-8 inline-flex items-center gap-2 rounded-full bg-white px-7 py-3.5 font-medium text-black transition hover:scale-[1.03]">
-              Request My Free Preview <ArrowRight size={18} />
-            </a>
           </div>
         </div>
       </section>
@@ -1464,7 +1200,6 @@ export default function Home() {
           <p>
             © {new Date().getFullYear()} Webryxo.
             All rights reserved.
-            Any Question? Email us at info@webryxo.com
           </p>
 
           <p>Designed & developed by Webryxo.</p>
