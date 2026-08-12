@@ -883,76 +883,124 @@ export default function Home() {
       {/* Services */}
       <section
         id="services"
-        className="relative z-10 mx-auto max-w-7xl px-6 py-28"
+        className="relative z-10 mx-auto max-w-7xl px-6 py-32"
       >
-        <div className="max-w-3xl">
-          <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-4 py-2 text-sm text-white/60">
-            <Sparkles
-              size={15}
-              className="text-violet-300"
-            />
-            What we do
+        <div className="grid gap-12 lg:grid-cols-[0.82fr_1.18fr]">
+          <div className="lg:sticky lg:top-28 lg:self-start">
+            <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-4 py-2 text-sm text-white/60">
+              <Sparkles size={15} className="text-violet-300" />
+              What we do
+            </div>
+
+            <h2 className="mt-6 text-5xl font-semibold leading-[0.96] tracking-[-0.055em] sm:text-6xl md:text-7xl">
+              We design.
+              <span className="block text-white/35">We build.</span>
+              <span className="block bg-gradient-to-r from-white via-violet-200 to-fuchsia-400 bg-clip-text text-transparent">
+                We make it work.
+              </span>
+            </h2>
+
+            <p className="mt-7 max-w-xl text-lg leading-8 text-white/45">
+              Webryxo combines strategy, design, development, motion, and
+              performance to create digital experiences that feel polished
+              and help businesses make a stronger first impression.
+            </p>
+
+            <a
+              href="/book"
+              className="mt-8 inline-flex items-center gap-2 rounded-full border border-white/12 bg-white/[0.035] px-6 py-3 text-sm font-medium text-white transition hover:border-white/25 hover:bg-white/[0.06]"
+            >
+              Tell us about your project
+              <ArrowRight size={16} />
+            </a>
           </div>
 
-          <h2 className="text-4xl font-semibold tracking-[-0.035em] sm:text-5xl md:text-6xl">
-            Everything your business needs
+          <div className="space-y-4">
+            {services.map((service, index) => {
+              const Icon = service.icon;
 
-            <span className="block text-white/35">
-              to look better online.
-            </span>
-          </h2>
+              return (
+                <motion.div
+                  key={service.title}
+                  initial={{ opacity: 0, y: 28 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true, amount: 0.2 }}
+                  transition={{
+                    duration: 0.5,
+                    delay: index * 0.055,
+                  }}
+                  whileHover={{ x: 8 }}
+                  className="group relative overflow-hidden rounded-[28px] border border-white/10 bg-white/[0.025] p-6 sm:p-7"
+                >
+                  <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-violet-500/[0.08] via-transparent to-fuchsia-500/[0.04] opacity-0 transition duration-500 group-hover:opacity-100" />
 
-          <p className="mt-6 max-w-2xl text-lg leading-8 text-white/45">
-            We combine design, development, performance,
-            and user experience to create websites that
-            feel modern and professional.
-          </p>
+                  <div className="relative grid items-center gap-5 sm:grid-cols-[auto_1fr_auto]">
+                    <div className="flex h-12 w-12 items-center justify-center rounded-2xl border border-white/10 bg-black/25">
+                      <Icon size={21} className="text-violet-300" />
+                    </div>
+
+                    <div>
+                      <div className="flex items-center gap-3">
+                        <span className="text-[11px] uppercase tracking-[0.2em] text-white/20">
+                          0{index + 1}
+                        </span>
+                        <h3 className="text-xl font-medium tracking-[-0.02em] sm:text-2xl">
+                          {service.title}
+                        </h3>
+                      </div>
+
+                      <p className="mt-3 max-w-2xl leading-7 text-white/40">
+                        {service.description}
+                      </p>
+                    </div>
+
+                    <div className="hidden h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-white/[0.025] text-white/35 transition duration-300 group-hover:border-white/20 group-hover:bg-white group-hover:text-black sm:flex">
+                      <ArrowRight size={15} />
+                    </div>
+                  </div>
+                </motion.div>
+              );
+            })}
+          </div>
         </div>
 
-        <div className="mt-14 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
-          {services.map((service, index) => {
-            const Icon = service.icon;
+        <div className="mt-16 overflow-hidden rounded-[34px] border border-white/10 bg-gradient-to-br from-white/[0.04] via-violet-500/[0.06] to-fuchsia-500/[0.04] p-7 sm:p-10">
+          <div className="grid items-center gap-10 lg:grid-cols-[1.1fr_0.9fr]">
+            <div>
+              <p className="text-xs uppercase tracking-[0.22em] text-violet-300">
+                Built around your business
+              </p>
 
-            return (
-              <motion.div
-                key={service.title}
-                initial={{
-                  opacity: 0,
-                  y: 30,
-                }}
-                whileInView={{
-                  opacity: 1,
-                  y: 0,
-                }}
-                viewport={{
-                  once: true,
-                }}
-                transition={{
-                  duration: 0.5,
-                  delay: index * 0.06,
-                }}
-                whileHover={{
-                  y: -8,
-                }}
-                className="group relative overflow-hidden rounded-[28px] border border-white/10 bg-white/[0.025] p-7"
-              >
-                <div className="mb-8 flex h-12 w-12 items-center justify-center rounded-2xl border border-white/10 bg-white/[0.05]">
-                  <Icon
-                    size={22}
-                    className="text-violet-300"
-                  />
+              <h3 className="mt-4 max-w-3xl text-3xl font-semibold tracking-[-0.035em] sm:text-4xl">
+                Not every business needs the same website.
+              </h3>
+
+              <p className="mt-5 max-w-2xl leading-7 text-white/45">
+                A restaurant may need menus and reservations. A barbershop may
+                need booking. An auto shop may need quote requests and service
+                pages. We shape the experience around what your customers
+                actually need to do.
+              </p>
+            </div>
+
+            <div className="grid grid-cols-2 gap-3 text-sm">
+              {[
+                "Restaurants",
+                "Barbershops",
+                "Auto Repair",
+                "Local Services",
+                "Professional Firms",
+                "Custom Projects",
+              ].map((item) => (
+                <div
+                  key={item}
+                  className="rounded-2xl border border-white/10 bg-black/20 px-4 py-4 text-white/55"
+                >
+                  {item}
                 </div>
-
-                <h3 className="text-xl font-medium">
-                  {service.title}
-                </h3>
-
-                <p className="mt-4 leading-7 text-white/40">
-                  {service.description}
-                </p>
-              </motion.div>
-            );
-          })}
+              ))}
+            </div>
+          </div>
         </div>
       </section>
 
