@@ -1,12 +1,14 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import Image from "next/image";
 import { motion, useMotionValue, useSpring } from "framer-motion";
 import {
   ArrowRight,
   BadgeCheck,
   Check,
   CheckCircle2,
+  ChevronDown,
   Clock3,
   Code2,
   ExternalLink,
@@ -42,168 +44,192 @@ import * as THREE from "three";
 
 function LaptopModel() {
   const group = useRef<THREE.Group>(null);
+  const screenGlow = useRef<THREE.MeshStandardMaterial>(null);
   const { pointer } = useThree();
 
-  useFrame((state) => {
+  useFrame((state, delta) => {
     if (!group.current) return;
+    const t = state.clock.elapsedTime;
 
-    const targetRotationY = -0.42 + pointer.x * 0.2;
-    const targetRotationX = -0.08 - pointer.y * 0.1;
-
-    group.current.rotation.y = THREE.MathUtils.lerp(
+    group.current.rotation.y = THREE.MathUtils.damp(
       group.current.rotation.y,
-      targetRotationY,
-      0.05
+      -0.38 + pointer.x * 0.24 + Math.sin(t * 0.32) * 0.018,
+      4.2,
+      delta
     );
-
-    group.current.rotation.x = THREE.MathUtils.lerp(
+    group.current.rotation.x = THREE.MathUtils.damp(
       group.current.rotation.x,
-      targetRotationX,
-      0.05
+      -0.10 - pointer.y * 0.13,
+      4.2,
+      delta
+    );
+    group.current.position.x = THREE.MathUtils.damp(
+      group.current.position.x,
+      pointer.x * 0.1,
+      3.2,
+      delta
+    );
+    group.current.position.y = THREE.MathUtils.damp(
+      group.current.position.y,
+      Math.sin(t * 1.05) * 0.055 + pointer.y * 0.045,
+      3.2,
+      delta
     );
 
-    group.current.position.y =
-      Math.sin(state.clock.elapsedTime * 1.25) * 0.08;
+    if (screenGlow.current) {
+      screenGlow.current.emissiveIntensity = 0.62 + Math.sin(t * 1.45) * 0.08;
+    }
   });
 
-  const keyboardRows = [
-    { count: 10, y: 0.27, startX: -0.92 },
-    { count: 9, y: 0.05, startX: -0.82 },
-    { count: 8, y: -0.17, startX: -0.72 },
-  ];
+  const keys = [];
+  for (let row = 0; row < 5; row++) {
+    const count = row === 4 ? 8 : 12;
+    const startX = -1.08 + (row === 4 ? 0.34 : 0);
+    for (let i = 0; i < count; i++) {
+      keys.push(
+        <mesh
+          key={`${row}-${i}`}
+          position={[startX + i * 0.195, -0.505, -0.46 + row * 0.19]}
+        >
+          <boxGeometry args={[0.145, 0.026, 0.115]} />
+          <meshStandardMaterial color="#242428" metalness={0.28} roughness={0.48} />
+        </mesh>
+      );
+    }
+  }
 
   return (
     <group ref={group}>
-      <mesh position={[0, -0.65, 0.15]}>
-        <boxGeometry args={[3, 0.16, 1.85]} />
-        <meshStandardMaterial
-          color="#18181b"
-          metalness={0.7}
-          roughness={0.25}
-        />
+      {/* lower aluminum body */}
+      <mesh position={[0, -0.65, 0.13]}>
+        <boxGeometry args={[3.15, 0.13, 1.95]} />
+        <meshStandardMaterial color="#1b1b1f" metalness={0.88} roughness={0.18} />
       </mesh>
 
-      <mesh position={[0, -0.555, 0]}>
-        <boxGeometry args={[2.7, 0.025, 1.5]} />
-        <meshStandardMaterial
-          color="#0b0b0d"
-          metalness={0.25}
-          roughness={0.65}
-        />
+      {/* tapered front lip */}
+      <mesh position={[0, -0.705, 1.08]} rotation={[0.08, 0, 0]}>
+        <boxGeometry args={[2.75, 0.055, 0.16]} />
+        <meshStandardMaterial color="#25252a" metalness={0.9} roughness={0.18} />
       </mesh>
 
-      {keyboardRows.map((row, rowIndex) =>
-        Array.from({ length: row.count }).map((_, index) => (
-          <mesh
-            key={`${rowIndex}-${index}`}
-            position={[
-              row.startX + index * 0.205,
-              -0.525,
-              row.y,
-            ]}
-          >
-            <boxGeometry args={[0.15, 0.025, 0.12]} />
-            <meshStandardMaterial
-              color="#27272a"
-              roughness={0.55}
-              metalness={0.25}
-            />
-          </mesh>
-        ))
-      )}
-
-      <mesh position={[0, -0.51, 0.62]}>
-        <boxGeometry args={[1.05, 0.02, 0.5]} />
-        <meshStandardMaterial
-          color="#222225"
-          roughness={0.35}
-          metalness={0.5}
-        />
+      {/* keyboard deck */}
+      <mesh position={[0, -0.57, 0.02]}>
+        <boxGeometry args={[2.88, 0.035, 1.68]} />
+        <meshStandardMaterial color="#111114" metalness={0.38} roughness={0.5} />
       </mesh>
 
-      <group position={[0, 0.26, -0.79]}>
+      {keys}
+
+      {/* trackpad */}
+      <mesh position={[0, -0.515, 0.67]}>
+        <boxGeometry args={[1.12, 0.018, 0.47]} />
+        <meshStandardMaterial color="#29292e" metalness={0.72} roughness={0.22} />
+      </mesh>
+
+      {/* hinge */}
+      <mesh position={[0, -0.49, -0.86]}>
+        <cylinderGeometry args={[0.075, 0.075, 2.55, 24]} />
+        <meshStandardMaterial color="#111114" metalness={0.9} roughness={0.2} />
+      </mesh>
+
+      {/* display assembly */}
+      <group position={[0, 0.29, -0.84]} rotation={[-0.04, 0, 0]}>
         <mesh>
-          <boxGeometry args={[2.82, 1.78, 0.11]} />
-          <meshStandardMaterial
-            color="#151518"
-            metalness={0.7}
-            roughness={0.22}
-          />
+          <boxGeometry args={[2.96, 1.86, 0.095]} />
+          <meshStandardMaterial color="#151519" metalness={0.9} roughness={0.16} />
         </mesh>
 
-        <mesh position={[0, 0, 0.062]}>
-          <planeGeometry args={[2.58, 1.53]} />
+        {/* black glass */}
+        <mesh position={[0, 0, 0.052]}>
+          <planeGeometry args={[2.74, 1.64]} />
           <meshStandardMaterial
-            color="#07070a"
-            emissive="#12082c"
+            ref={screenGlow}
+            color="#050508"
+            emissive="#12082b"
             emissiveIntensity={0.65}
+            metalness={0.15}
+            roughness={0.3}
           />
         </mesh>
 
-        <group position={[0, 0, 0.075]}>
-          <mesh position={[-0.9, 0.58, 0]}>
-            <planeGeometry args={[0.18, 0.09]} />
+        {/* webcam */}
+        <mesh position={[0, 0.855, 0.06]}>
+          <circleGeometry args={[0.025, 18]} />
+          <meshBasicMaterial color="#08080a" />
+        </mesh>
+
+        {/* animated-looking Webryxo mini site */}
+        <group position={[0, 0, 0.064]}>
+          {/* browser/nav bar */}
+          <mesh position={[0, 0.68, 0]}>
+            <planeGeometry args={[2.58, 0.16]} />
+            <meshBasicMaterial color="#0b0b10" />
+          </mesh>
+          <mesh position={[-1.05, 0.68, 0.003]}>
+            <planeGeometry args={[0.28, 0.055]} />
             <meshBasicMaterial color="#a78bfa" />
           </mesh>
-
-          <mesh position={[-0.63, 0.58, 0]}>
-            <planeGeometry args={[0.26, 0.045]} />
+          <mesh position={[0.55, 0.68, 0.003]}>
+            <planeGeometry args={[0.18, 0.025]} />
+            <meshBasicMaterial color="#71717a" />
+          </mesh>
+          <mesh position={[0.82, 0.68, 0.003]}>
+            <planeGeometry args={[0.18, 0.025]} />
+            <meshBasicMaterial color="#71717a" />
+          </mesh>
+          <mesh position={[1.08, 0.68, 0.003]}>
+            <planeGeometry args={[0.28, 0.07]} />
             <meshBasicMaterial color="#fafafa" />
           </mesh>
 
-          <mesh position={[0.48, 0.58, 0]}>
-            <planeGeometry args={[0.22, 0.028]} />
+          {/* hero copy */}
+          <mesh position={[-0.63, 0.34, 0.003]}>
+            <planeGeometry args={[0.92, 0.075]} />
+            <meshBasicMaterial color="#ffffff" />
+          </mesh>
+          <mesh position={[-0.72, 0.20, 0.003]}>
+            <planeGeometry args={[0.74, 0.075]} />
+            <meshBasicMaterial color="#c4b5fd" />
+          </mesh>
+          <mesh position={[-0.77, 0.03, 0.003]}>
+            <planeGeometry args={[0.64, 0.025]} />
             <meshBasicMaterial color="#52525b" />
           </mesh>
-
-          <mesh position={[0.79, 0.58, 0]}>
-            <planeGeometry args={[0.22, 0.028]} />
-            <meshBasicMaterial color="#52525b" />
-          </mesh>
-
-          <mesh position={[1.06, 0.58, 0]}>
-            <planeGeometry args={[0.27, 0.11]} />
-            <meshBasicMaterial color="#fafafa" />
-          </mesh>
-
-          <mesh position={[-0.67, 0.29, 0]}>
-            <planeGeometry args={[0.56, 0.08]} />
-            <meshBasicMaterial color="#24163f" />
-          </mesh>
-
-          <mesh position={[-0.38, 0.04, 0]}>
-            <planeGeometry args={[1.18, 0.12]} />
-            <meshBasicMaterial color="#f4f4f5" />
-          </mesh>
-
-          <mesh position={[-0.52, -0.14, 0]}>
-            <planeGeometry args={[0.9, 0.12]} />
-            <meshBasicMaterial color="#a78bfa" />
-          </mesh>
-
-          <mesh position={[-0.52, -0.34, 0]}>
-            <planeGeometry args={[0.9, 0.045]} />
-            <meshBasicMaterial color="#52525b" />
-          </mesh>
-
-          <mesh position={[-0.66, -0.44, 0]}>
-            <planeGeometry args={[0.62, 0.045]} />
+          <mesh position={[-0.82, -0.05, 0.003]}>
+            <planeGeometry args={[0.54, 0.025]} />
             <meshBasicMaterial color="#3f3f46" />
           </mesh>
-
-          <mesh position={[-0.72, -0.62, 0]}>
-            <planeGeometry args={[0.5, 0.12]} />
+          <mesh position={[-0.92, -0.20, 0.003]}>
+            <planeGeometry args={[0.34, 0.09]} />
             <meshBasicMaterial color="#ffffff" />
           </mesh>
 
-          <mesh position={[0.72, -0.08, 0]}>
-            <circleGeometry args={[0.42, 32]} />
+          {/* visual card */}
+          <mesh position={[0.72, 0.10, 0.003]}>
+            <planeGeometry args={[0.86, 0.82]} />
+            <meshBasicMaterial color="#17121f" />
+          </mesh>
+          <mesh position={[0.72, 0.10, 0.006]}>
+            <circleGeometry args={[0.28, 48]} />
             <meshBasicMaterial color="#6d28d9" />
           </mesh>
+          <mesh position={[0.72, 0.10, 0.009]}>
+            <circleGeometry args={[0.16, 48]} />
+            <meshBasicMaterial color="#d8b4fe" />
+          </mesh>
 
-          <mesh position={[0.72, -0.08, 0.005]}>
-            <circleGeometry args={[0.25, 32]} />
-            <meshBasicMaterial color="#a855f7" />
+          {/* lower project cards */}
+          <mesh position={[-0.77, -0.55, 0.003]}>
+            <planeGeometry args={[0.68, 0.20]} />
+            <meshBasicMaterial color="#18181b" />
+          </mesh>
+          <mesh position={[0, -0.55, 0.003]}>
+            <planeGeometry args={[0.68, 0.20]} />
+            <meshBasicMaterial color="#21162e" />
+          </mesh>
+          <mesh position={[0.77, -0.55, 0.003]}>
+            <planeGeometry args={[0.68, 0.20]} />
+            <meshBasicMaterial color="#18181b" />
           </mesh>
         </group>
       </group>
@@ -214,44 +240,21 @@ function LaptopModel() {
 function HeroLaptop() {
   return (
     <Canvas
-      camera={{
-        position: [0, 0.4, 5.4],
-        fov: 40,
-      }}
-      dpr={[1, 1.5]}
+      camera={{ position: [0, 0.35, 5.25], fov: 38 }}
+      dpr={[1, 1.75]}
+      gl={{ antialias: true, alpha: true }}
     >
-      <ambientLight intensity={1.6} />
+      <ambientLight intensity={1.25} />
+      <directionalLight position={[4, 5, 5]} intensity={2.4} />
+      <pointLight position={[-3, 2, 3]} intensity={20} color="#7c3aed" />
+      <pointLight position={[3, -1, 2]} intensity={13} color="#c026d3" />
+      <pointLight position={[0, 2, -2]} intensity={8} color="#60a5fa" />
 
-      <directionalLight
-        position={[4, 5, 5]}
-        intensity={2.2}
-      />
-
-      <pointLight
-        position={[-3, 2, 3]}
-        intensity={16}
-        color="#7c3aed"
-      />
-
-      <pointLight
-        position={[3, -1, 2]}
-        intensity={10}
-        color="#c026d3"
-      />
-
-      <Float
-        speed={1.5}
-        rotationIntensity={0.08}
-        floatIntensity={0.3}
-      >
+      <Float speed={1.25} rotationIntensity={0.04} floatIntensity={0.18}>
         <LaptopModel />
       </Float>
 
-      <OrbitControls
-        enableZoom={false}
-        enablePan={false}
-        enableRotate={false}
-      />
+      <OrbitControls enableZoom={false} enablePan={false} enableRotate={false} />
     </Canvas>
   );
 }
@@ -363,6 +366,70 @@ const benefits = [
     description:
       "You stay involved throughout the project and can request changes before launch.",
   },
+];
+
+const pricingPlans = [
+  {
+    name: "Starter",
+    price: "$299",
+    description:
+      "A polished online presence for a small business that needs the essentials done right.",
+    features: [
+      "1–3 page custom website",
+      "Mobile-responsive design",
+      "Contact or inquiry form",
+      "Basic SEO foundations",
+      "Domain connection",
+      "Launch support",
+    ],
+    popular: false,
+  },
+  {
+    name: "Business",
+    price: "$499",
+    description:
+      "Our best fit for local businesses that want a stronger, more complete website.",
+    features: [
+      "Up to 5 custom pages",
+      "Premium custom design",
+      "Animations and interactions",
+      "Booking or quote sections",
+      "Basic SEO foundations",
+      "Revision round before launch",
+    ],
+    popular: true,
+  },
+  {
+    name: "Premium",
+    price: "$799",
+    description:
+      "For businesses that need more custom pages, visuals, motion, or advanced functionality.",
+    features: [
+      "Expanded custom page count",
+      "Advanced animations or 3D",
+      "Custom forms and features",
+      "More complex booking flows",
+      "Performance optimization",
+      "Priority project support",
+    ],
+    popular: false,
+  },
+];
+
+const processSteps = [
+  { number: "01", title: "Tell us about your business", description: "Send us your business details, goals, and what you want your website to accomplish." },
+  { number: "02", title: "We create your preview", description: "We put together a website direction so you can see what Webryxo can build for your business." },
+  { number: "03", title: "You review the design", description: "You look through the preview, give feedback, and decide whether you want to move forward." },
+  { number: "04", title: "We finish and launch", description: "Once you approve the project, we complete the website, connect the domain, and get it live." },
+];
+
+const faqs = [
+  { question: "Do I have to pay before seeing anything?", answer: "No. You can request a free website preview first. If you like the direction and want to move forward, we can continue with the paid project." },
+  { question: "Who pays for the domain?", answer: "The domain is paid separately by the client. We can help connect it to the finished website." },
+  { question: "How much is hosting and maintenance?", answer: "Hosting and maintenance are $15 per month or $150 per year." },
+  { question: "Can I request changes?", answer: "Yes. You can give feedback during the project. The exact revision scope depends on the package and project requirements." },
+  { question: "Can you redesign an existing website?", answer: "Yes. If you already have a website, Webryxo can create a more modern design and rebuild the experience around your current business needs." },
+  { question: "What if I need something more advanced?", answer: "Custom forms, booking flows, integrations, e-commerce, extra pages, and other advanced features can be quoted based on the project." },
 ];
 
 const laptopImages = [
@@ -483,10 +550,15 @@ export default function Home() {
       <header className="sticky top-0 z-50 border-b border-white/[0.06] bg-black/60 backdrop-blur-2xl">
         <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
           <a href="#top" className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl border border-violet-400/20 bg-violet-500/10">
-              <span className="bg-gradient-to-br from-violet-300 to-fuchsia-300 bg-clip-text text-lg font-semibold text-transparent">
-                W
-              </span>
+            <div className="relative h-11 w-11 overflow-hidden rounded-xl">
+              <Image
+                src="/icon.png"
+                alt="Webryxo logo"
+                fill
+                priority
+                sizes="44px"
+                className="object-cover"
+              />
             </div>
 
             <span className="text-xl font-semibold">
@@ -495,33 +567,19 @@ export default function Home() {
           </a>
 
           <nav className="hidden items-center gap-8 text-sm text-white/55 md:flex">
-            <a href="#services" className="hover:text-white">
-              Services
-            </a>
-
-            <a href="#showcase" className="hover:text-white">
-              Showcase
-            </a>
-
-            <a href="#work" className="hover:text-white">
-              Our Work
-            </a>
-
-            <a href="#about" className="hover:text-white">
-              Why Webryxo
-            </a>
-
-            <a href="#contact" className="hover:text-white">
-              Contact
-            </a>
+            <a href="#work" className="transition hover:text-white">Work</a>
+            <a href="#services" className="transition hover:text-white">Services</a>
+            <a href="#process" className="transition hover:text-white">Process</a>
+            <a href="#pricing" className="transition hover:text-white">Pricing</a>
+            <a href="#about" className="transition hover:text-white">About</a>
           </nav>
 
           <div className="flex items-center gap-3">
             <a
-              href="#contact"
+              href="/book"
               className="hidden rounded-full bg-white px-5 py-2.5 text-sm font-medium text-black sm:inline-flex"
             >
-              Start a Project
+              Start a Project ↗
             </a>
 
             <button
@@ -559,6 +617,21 @@ export default function Home() {
               </a>
 
               <a
+                href="#pricing"
+                onClick={() => setMenuOpen(false)}
+              >
+                Pricing
+              </a>
+
+              <a href="#process" onClick={() => setMenuOpen(false)}>
+                Process
+              </a>
+
+              <a href="#faq" onClick={() => setMenuOpen(false)}>
+                FAQ
+              </a>
+
+              <a
                 href="#about"
                 onClick={() => setMenuOpen(false)}
               >
@@ -566,7 +639,7 @@ export default function Home() {
               </a>
 
               <a
-                href="#contact"
+                href="/book"
                 onClick={() => setMenuOpen(false)}
               >
                 Contact
@@ -579,237 +652,231 @@ export default function Home() {
       {/* Hero */}
       <section
         id="top"
-        className="relative z-10 mx-auto grid min-h-[90vh] max-w-7xl items-center gap-8 px-6 py-16 lg:grid-cols-[1.06fr_0.94fr]"
+        className="relative z-10 mx-auto grid min-h-[calc(100svh-76px)] max-w-7xl items-center gap-10 px-6 py-14 lg:grid-cols-[1.02fr_0.98fr]"
       >
         <motion.div
-          initial={{ opacity: 0, y: 35 }}
+          initial={{ opacity: 0, y: 34 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
+          transition={{ duration: 0.85, ease: [0.22, 1, 0.36, 1] }}
+          className="relative"
         >
-          <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-4 py-2 text-sm text-white/65">
-            <Sparkles size={15} className="text-violet-300" />
-            Premium websites built to stand out
+          <div className="mb-7 flex items-center gap-3 text-[11px] font-medium uppercase tracking-[0.28em] text-white/45">
+            <span className="h-px w-9 bg-violet-400/70" />
+            Web Design & Digital Experiences
           </div>
 
-          <h1 className="text-5xl font-semibold leading-[1.01] tracking-[-0.045em] sm:text-6xl md:text-7xl xl:text-[88px]">
-            Websites engineered
-
-            <span className="block bg-gradient-to-r from-white via-white/60 to-violet-400 bg-clip-text text-transparent">
-              to be remembered.
+          <h1 className="max-w-[860px] text-[clamp(3.6rem,8vw,7.6rem)] font-semibold leading-[0.88] tracking-[-0.065em]">
+            We build
+            <span className="block text-white/38">websites people</span>
+            <span className="block bg-gradient-to-r from-white via-violet-200 to-fuchsia-400 bg-clip-text text-transparent">
+              remember.
             </span>
           </h1>
 
-          <p className="mt-8 max-w-2xl text-lg leading-8 text-white/50 md:text-xl">
-            Webryxo designs and develops modern websites
-            for businesses that want to look professional,
-            build trust, and turn visitors into customers.
+          <p className="mt-8 max-w-xl text-lg leading-8 text-white/48 md:text-xl">
+            Webryxo designs and develops fast, modern digital experiences
+            that help businesses stand out, build trust, and turn visitors
+            into customers.
           </p>
 
-          <div className="mt-10 flex flex-wrap gap-4">
+          <div className="mt-9 flex flex-wrap gap-4">
             <a
-              href="#contact"
-              className="group inline-flex items-center gap-2 rounded-full bg-white px-7 py-3.5 font-medium text-black transition hover:scale-[1.03]"
+              href="/book"
+              className="group inline-flex items-center gap-2 rounded-full bg-white px-7 py-3.5 font-medium text-black transition duration-300 hover:scale-[1.03]"
             >
-              Get a Free Website Preview
-
+              Start a Project
               <ArrowRight
                 size={18}
-                className="transition group-hover:translate-x-1"
+                className="transition-transform duration-300 group-hover:translate-x-1"
               />
             </a>
 
             <a
-              href="#showcase"
-              className="rounded-full border border-white/10 bg-white/[0.04] px-7 py-3.5"
+              href="#work"
+              className="inline-flex items-center rounded-full border border-white/12 bg-white/[0.035] px-7 py-3.5 text-white/80 transition hover:border-white/25 hover:bg-white/[0.06]"
             >
-              Explore Designs
+              Explore Our Work
             </a>
+          </div>
+
+          <div className="mt-12 flex flex-wrap items-center gap-x-6 gap-y-3 text-xs uppercase tracking-[0.2em] text-white/25">
+            <span>Design</span>
+            <span className="h-1 w-1 rounded-full bg-violet-400/60" />
+            <span>Development</span>
+            <span className="h-1 w-1 rounded-full bg-violet-400/60" />
+            <span>Motion</span>
+            <span className="h-1 w-1 rounded-full bg-violet-400/60" />
+            <span>Performance</span>
           </div>
         </motion.div>
 
-        {/* 3D Laptop */}
         <motion.div
-          initial={{
-            opacity: 0,
-            scale: 0.9,
-            x: 40,
-          }}
-          animate={{
-            opacity: 1,
-            scale: 1,
-            x: 0,
-          }}
+          initial={{ opacity: 0, scale: 0.92, x: 50 }}
+          animate={{ opacity: 1, scale: 1, x: 0 }}
           transition={{
-            duration: 1,
-            delay: 0.1,
+            duration: 1.05,
+            delay: 0.08,
+            ease: [0.22, 1, 0.36, 1],
           }}
-          className="relative hidden h-[620px] lg:block"
+          className="relative hidden h-[650px] lg:block"
         >
-          <div className="absolute inset-0 rounded-full bg-violet-600/[0.1] blur-[120px]" />
+          <div className="absolute inset-[8%] rounded-full bg-violet-600/[0.12] blur-[120px]" />
+          <div className="absolute inset-x-[10%] bottom-[10%] h-24 rounded-full bg-fuchsia-500/[0.08] blur-[55px]" />
 
           <div className="absolute inset-0">
             <HeroLaptop />
           </div>
 
           <motion.div
-            animate={{ y: [0, -12, 0] }}
-            transition={{
-              duration: 5,
-              repeat: Infinity,
-              ease: "easeInOut",
-            }}
-            className="absolute left-0 top-24 rounded-2xl border border-white/10 bg-black/55 p-4 backdrop-blur-xl"
+            animate={{ y: [0, -10, 0], rotate: [0, -1, 0] }}
+            transition={{ duration: 5.5, repeat: Infinity, ease: "easeInOut" }}
+            className="absolute left-0 top-24 rounded-2xl border border-white/10 bg-black/45 p-4 shadow-2xl backdrop-blur-xl"
           >
             <div className="flex items-center gap-3">
               <Code2 className="text-violet-300" size={20} />
-
               <div>
-                <p className="text-sm font-medium">
-                  Custom Development
-                </p>
-
-                <p className="text-xs text-white/35">
-                  Built around your business
-                </p>
+                <p className="text-sm font-medium">Custom Development</p>
+                <p className="text-xs text-white/35">Built around your business</p>
               </div>
             </div>
           </motion.div>
 
           <motion.div
-            animate={{ y: [0, 14, 0] }}
-            transition={{
-              duration: 6,
-              repeat: Infinity,
-              ease: "easeInOut",
-            }}
-            className="absolute bottom-24 right-0 rounded-2xl border border-white/10 bg-black/55 p-4 backdrop-blur-xl"
+            animate={{ y: [0, 12, 0], rotate: [0, 1, 0] }}
+            transition={{ duration: 6.2, repeat: Infinity, ease: "easeInOut" }}
+            className="absolute bottom-24 right-0 rounded-2xl border border-white/10 bg-black/45 p-4 shadow-2xl backdrop-blur-xl"
           >
             <div className="flex items-center gap-3">
-              <Layers3
-                className="text-fuchsia-300"
-                size={20}
-              />
-
+              <Layers3 className="text-fuchsia-300" size={20} />
               <div>
-                <p className="text-sm font-medium">
-                  Premium Design
-                </p>
-
-                <p className="text-xs text-white/35">
-                  Modern. Clean. Memorable.
-                </p>
+                <p className="text-sm font-medium">Premium Design</p>
+                <p className="text-xs text-white/35">Modern. Clean. Memorable.</p>
               </div>
             </div>
           </motion.div>
         </motion.div>
       </section>
 
-      {/* NEW LAPTOP IMAGE SHOWCASE */}
+      {/* Selected Work Showcase */}
       <section
         id="showcase"
         className="relative z-10 mx-auto max-w-7xl px-6 py-32"
       >
-        <div className="mx-auto max-w-3xl text-center">
-          <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-4 py-2 text-sm text-white/60">
-            <Sparkles
-              size={15}
-              className="text-violet-300"
-            />
+        <div className="grid items-end gap-10 lg:grid-cols-[0.9fr_1.1fr]">
+          <div>
+            <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-4 py-2 text-sm text-white/60">
+              <Sparkles size={15} className="text-violet-300" />
+              Selected work
+            </div>
 
-            Digital showcase
+            <h2 className="mt-6 text-5xl font-semibold leading-[0.96] tracking-[-0.055em] sm:text-6xl md:text-7xl">
+              Built to look
+              <span className="block text-white/35">different.</span>
+            </h2>
           </div>
 
-          <h2 className="mt-6 text-4xl font-semibold tracking-[-0.04em] sm:text-5xl md:text-6xl">
-            Websites designed to
-            <span className="block bg-gradient-to-r from-violet-300 via-fuchsia-300 to-indigo-300 bg-clip-text text-transparent">
-              look incredible.
-            </span>
-          </h2>
-
-          <p className="mx-auto mt-6 max-w-2xl text-lg leading-8 text-white/45">
-            Modern design presented across premium digital
-            experiences and devices.
-          </p>
+          <div className="lg:pb-2">
+            <p className="max-w-2xl text-lg leading-8 text-white/45">
+              Every Webryxo project is designed around the business behind it.
+              Different industries, different goals, different visual systems —
+              never the same template copied over and over.
+            </p>
+          </div>
         </div>
 
-        <div className="relative mt-20">
-          <div className="pointer-events-none absolute left-1/2 top-1/2 h-[600px] w-[800px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-violet-600/[0.08] blur-[150px]" />
+        <div className="relative mt-16 space-y-8">
+          <div className="pointer-events-none absolute left-1/2 top-1/2 h-[720px] w-[900px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-violet-600/[0.07] blur-[170px]" />
 
-          <div className="relative grid gap-7 md:grid-cols-2 lg:grid-cols-3">
-            {laptopImages.map((item, index) => (
-              <motion.a
-                key={item.image}
-                href={item.href}
-                initial={{
-                  opacity: 0,
-                  y: 40,
-                  scale: 0.95,
-                }}
-                whileInView={{
-                  opacity: 1,
-                  y: 0,
-                  scale: 1,
-                }}
-                viewport={{
-                  once: true,
-                  amount: 0.2,
-                }}
-                transition={{
-                  duration: 0.6,
-                  delay: index * 0.08,
-                }}
-                whileHover={{
-                  y: -12,
-                  scale: 1.025,
-                  rotateX: 2,
-                  rotateY:
-                    index % 2 === 0 ? -2 : 2,
-                }}
-                className="group relative block cursor-pointer overflow-hidden rounded-[30px] border border-white/10 bg-white/[0.025] p-3 backdrop-blur-xl"
-                style={{
-                  transformStyle: "preserve-3d",
-                  perspective: "1200px",
-                }}
-              >
-                <div className="absolute inset-0 bg-gradient-to-br from-violet-500/[0.08] via-transparent to-fuchsia-500/[0.05] opacity-0 transition duration-500 group-hover:opacity-100" />
+          {laptopImages.slice(0, 3).map((item, index) => (
+            <motion.a
+              key={item.image}
+              href={item.href}
+              initial={{ opacity: 0, y: 55, scale: 0.985 }}
+              whileInView={{ opacity: 1, y: 0, scale: 1 }}
+              viewport={{ once: true, amount: 0.18 }}
+              transition={{
+                duration: 0.8,
+                delay: index * 0.06,
+                ease: [0.22, 1, 0.36, 1],
+              }}
+              className="group relative block overflow-hidden rounded-[34px] border border-white/10 bg-white/[0.025]"
+            >
+              <div className="grid min-h-[520px] lg:grid-cols-[0.78fr_1.22fr]">
+                <div className="relative z-10 flex flex-col justify-between p-7 sm:p-9 lg:p-12">
+                  <div>
+                    <div className="flex items-center gap-3">
+                      <span className="text-xs uppercase tracking-[0.24em] text-violet-300">
+                        0{index + 1}
+                      </span>
+                      <span className="h-px w-10 bg-white/15" />
+                      <span className="text-xs uppercase tracking-[0.18em] text-white/30">
+                        Webryxo concept
+                      </span>
+                    </div>
 
-                <div className="relative overflow-hidden rounded-[22px] bg-black">
+                    <h3 className="mt-8 text-4xl font-semibold tracking-[-0.04em] sm:text-5xl">
+                      {index === 0
+                        ? "Northline Barbers"
+                        : index === 1
+                        ? "Apex Auto Works"
+                        : "Paw & Polish"}
+                    </h3>
+
+                    <p className="mt-5 max-w-md leading-7 text-white/42">
+                      {index === 0
+                        ? "A bold booking-first experience for a modern barbershop."
+                        : index === 1
+                        ? "A high-trust automotive website built around services, diagnostics, and quote requests."
+                        : "A friendly, polished grooming website focused on appointments and customer confidence."}
+                    </p>
+                  </div>
+
+                  <div className="mt-12">
+                    <div className="mb-5 flex flex-wrap gap-2">
+                      {(index === 0
+                        ? ["Branding", "Booking", "Mobile"]
+                        : index === 1
+                        ? ["Development", "SEO", "Performance"]
+                        : ["Responsive", "Conversion", "UI"]
+                      ).map((tag) => (
+                        <span
+                          key={tag}
+                          className="rounded-full border border-white/10 bg-white/[0.03] px-3 py-1.5 text-xs text-white/45"
+                        >
+                          {tag}
+                        </span>
+                      ))}
+                    </div>
+
+                    <span className="inline-flex items-center gap-2 text-sm font-medium text-white">
+                      View project
+                      <ArrowRight
+                        size={16}
+                        className="transition-transform duration-300 group-hover:translate-x-1.5"
+                      />
+                    </span>
+                  </div>
+                </div>
+
+                <div className="relative min-h-[360px] overflow-hidden border-t border-white/10 bg-black lg:min-h-full lg:border-l lg:border-t-0">
                   <motion.img
                     src={item.image}
-                    alt={`Webryxo laptop website showcase ${index + 1}`}
-                    className="h-[260px] w-full object-cover sm:h-[300px]"
-                    whileHover={{
-                      scale: 1.05,
-                    }}
-                    transition={{
-                      duration: 0.5,
-                    }}
+                    alt={`Webryxo featured website project ${index + 1}`}
+                    className="absolute inset-0 h-full w-full object-cover"
+                    whileHover={{ scale: 1.045 }}
+                    transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
                   />
 
-                  <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
-                </div>
+                  <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-black/20 via-transparent to-transparent" />
+                  <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/45 via-transparent to-transparent" />
 
-                <div className="relative flex items-center justify-between px-3 pb-3 pt-5">
-                  <div>
-                    <p className="text-sm font-medium">
-                      Digital Experience
-                    </p>
-
-                    <p className="mt-1 text-xs text-white/35">
-                      Web design inspiration
-                    </p>
-                  </div>
-
-                  <div className="flex h-9 w-9 items-center justify-center rounded-full border border-white/10 bg-white/[0.04] transition group-hover:bg-white group-hover:text-black">
-                    <ExternalLink
-                      size={15}
-                      className="text-white/60 transition group-hover:text-black"
-                    />
+                  <div className="absolute bottom-5 right-5 flex h-12 w-12 items-center justify-center rounded-full border border-white/15 bg-black/45 backdrop-blur-xl transition duration-300 group-hover:bg-white group-hover:text-black">
+                    <ExternalLink size={17} />
                   </div>
                 </div>
-              </motion.a>
-            ))}
-          </div>
+              </div>
+            </motion.a>
+          ))}
         </div>
       </section>
 
@@ -889,105 +956,214 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Portfolio */}
+      {/* Capabilities / Work Grid */}
       <section
         id="work"
         className="relative z-10 mx-auto max-w-7xl px-6 py-28"
       >
-        <div className="max-w-3xl">
-          <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-4 py-2 text-sm text-white/60">
-            <Layers3
-              size={15}
-              className="text-violet-300"
-            />
-            Webryxo demos
+        <div className="grid gap-12 lg:grid-cols-[0.78fr_1.22fr]">
+          <div className="lg:sticky lg:top-28 lg:self-start">
+            <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-4 py-2 text-sm text-white/60">
+              <Layers3 size={15} className="text-violet-300" />
+              More Webryxo work
+            </div>
+
+            <h2 className="mt-6 text-4xl font-semibold tracking-[-0.045em] sm:text-5xl md:text-6xl">
+              Different businesses.
+              <span className="block text-white/35">
+                Different experiences.
+              </span>
+            </h2>
+
+            <p className="mt-6 max-w-xl text-lg leading-8 text-white/45">
+              We adapt the design, layout, tone, and functionality to the
+              business instead of forcing every client into one visual style.
+            </p>
+
+            <a
+              href="/book"
+              className="mt-8 inline-flex items-center gap-2 rounded-full bg-white px-6 py-3 text-sm font-medium text-black transition hover:scale-[1.03]"
+            >
+              Start a Project
+              <ArrowRight size={16} />
+            </a>
           </div>
 
-          <h2 className="text-4xl font-semibold tracking-[-0.035em] sm:text-5xl md:text-6xl">
-            See what we
-            <span className="block text-white/35">
-              can build.
+          <div className="grid gap-5 sm:grid-cols-2">
+            {projects.map((project, index) => {
+              const Icon = project.icon;
+
+              return (
+                <motion.a
+                  key={project.title}
+                  href={project.href}
+                  initial={{ opacity: 0, y: 35 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true, amount: 0.2 }}
+                  transition={{
+                    duration: 0.55,
+                    delay: index * 0.07,
+                  }}
+                  whileHover={{ y: -8 }}
+                  className={`group relative overflow-hidden rounded-[30px] border border-white/10 bg-white/[0.025] p-7 ${
+                    index === 2 ? "sm:col-span-2" : ""
+                  }`}
+                >
+                  <div
+                    className={`absolute inset-0 bg-gradient-to-br ${project.accent} opacity-55`}
+                  />
+
+                  <div className="relative">
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs uppercase tracking-[0.2em] text-white/25">
+                        {project.number}
+                      </span>
+
+                      <div className="flex h-11 w-11 items-center justify-center rounded-2xl border border-white/10 bg-black/25">
+                        <Icon size={19} className="text-white/65" />
+                      </div>
+                    </div>
+
+                    <p className="mt-12 text-xs uppercase tracking-[0.18em] text-violet-300">
+                      {project.category}
+                    </p>
+
+                    <h3 className="mt-3 text-3xl font-medium tracking-[-0.025em]">
+                      {project.title}
+                    </h3>
+
+                    <p className="mt-4 max-w-lg leading-7 text-white/40">
+                      {project.description}
+                    </p>
+
+                    <div className="mt-7 flex flex-wrap gap-2">
+                      {project.tags.map((tag) => (
+                        <span
+                          key={tag}
+                          className="rounded-full border border-white/10 bg-black/15 px-3 py-1.5 text-xs text-white/40"
+                        >
+                          {tag}
+                        </span>
+                      ))}
+                    </div>
+
+                    <div className="mt-9 inline-flex items-center gap-2 text-sm font-medium">
+                      View Demo
+                      <ArrowRight
+                        size={15}
+                        className="transition-transform duration-300 group-hover:translate-x-1.5"
+                      />
+                    </div>
+                  </div>
+                </motion.a>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+
+      {/* Pricing */}
+      <section
+        id="pricing"
+        className="relative z-10 mx-auto max-w-7xl px-6 py-32"
+      >
+        <div className="mx-auto max-w-3xl text-center">
+          <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-4 py-2 text-sm text-white/60">
+            <Sparkles size={15} className="text-violet-300" />
+            Simple pricing
+          </div>
+
+          <h2 className="mt-6 text-4xl font-semibold tracking-[-0.04em] sm:text-5xl md:text-6xl">
+            Pick the right website
+            <span className="block bg-gradient-to-r from-violet-300 via-fuchsia-300 to-indigo-300 bg-clip-text text-transparent">
+              for your business.
             </span>
           </h2>
+
+          <p className="mx-auto mt-6 max-w-2xl text-lg leading-8 text-white/45">
+            Every project starts with a free website preview. You only move
+            forward when you are happy with the direction.
+          </p>
         </div>
 
         <div className="mt-16 grid gap-6 lg:grid-cols-3">
-          {projects.map((project, index) => {
-            const Icon = project.icon;
-
-            return (
-              <motion.article
-                key={project.title}
-                initial={{
-                  opacity: 0,
-                  y: 40,
-                }}
-                whileInView={{
-                  opacity: 1,
-                  y: 0,
-                }}
-                viewport={{
-                  once: true,
-                }}
-                transition={{
-                  duration: 0.6,
-                  delay: index * 0.08,
-                }}
-                whileHover={{
-                  y: -8,
-                }}
-                className="group relative overflow-hidden rounded-[30px] border border-white/10 bg-white/[0.025] p-7"
-              >
-                <div
-                  className={`absolute inset-0 bg-gradient-to-br ${project.accent} opacity-50`}
-                />
-
-                <div className="relative">
-                  <div className="flex items-center justify-between">
-                    <span className="text-sm text-white/25">
-                      {project.number}
-                    </span>
-
-                    <Icon
-                      size={21}
-                      className="text-white/60"
-                    />
-                  </div>
-
-                  <p className="mt-12 text-sm text-violet-300">
-                    {project.category}
-                  </p>
-
-                  <h3 className="mt-3 text-2xl font-medium">
-                    {project.title}
-                  </h3>
-
-                  <p className="mt-4 leading-7 text-white/40">
-                    {project.description}
-                  </p>
-
-                  <div className="mt-6 flex flex-wrap gap-2">
-                    {project.tags.map((tag) => (
-                      <span
-                        key={tag}
-                        className="rounded-full border border-white/10 px-3 py-1.5 text-xs text-white/40"
-                      >
-                        {tag}
-                      </span>
-                    ))}
-                  </div>
-
-                  <a
-                    href={project.href}
-                    className="mt-8 inline-flex items-center gap-2 rounded-full bg-white px-5 py-2.5 text-sm font-medium text-black"
-                  >
-                    View Demo
-                    <ExternalLink size={14} />
-                  </a>
+          {pricingPlans.map((plan, index) => (
+            <motion.article
+              key={plan.name}
+              initial={{ opacity: 0, y: 35 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, amount: 0.2 }}
+              transition={{ duration: 0.55, delay: index * 0.08 }}
+              whileHover={{ y: -8 }}
+              className={`relative overflow-hidden rounded-[30px] border p-7 ${
+                plan.popular
+                  ? "border-violet-400/40 bg-violet-500/[0.08]"
+                  : "border-white/10 bg-white/[0.025]"
+              }`}
+            >
+              {plan.popular && (
+                <div className="absolute right-5 top-5 rounded-full border border-violet-300/30 bg-violet-400/15 px-3 py-1 text-xs font-medium text-violet-200">
+                  Most Popular
                 </div>
-              </motion.article>
-            );
-          })}
+              )}
+
+              <p className="text-sm font-medium text-violet-300">{plan.name}</p>
+
+              <div className="mt-5 flex items-end gap-2">
+                <span className="text-5xl font-semibold tracking-[-0.04em]">
+                  {plan.price}
+                </span>
+                <span className="pb-1 text-sm text-white/35">one-time</span>
+              </div>
+
+              <p className="mt-5 min-h-[84px] leading-7 text-white/45">
+                {plan.description}
+              </p>
+
+              <div className="my-7 h-px bg-white/10" />
+
+              <div className="space-y-4">
+                {plan.features.map((feature) => (
+                  <div
+                    key={feature}
+                    className="flex items-start gap-3 text-sm text-white/65"
+                  >
+                    <div className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-violet-400/10">
+                      <Check size={13} className="text-violet-300" />
+                    </div>
+                    <span>{feature}</span>
+                  </div>
+                ))}
+              </div>
+
+              <a
+                href="/book"
+                className={`mt-8 flex w-full items-center justify-center gap-2 rounded-2xl px-5 py-3.5 text-sm font-medium transition hover:scale-[1.02] ${
+                  plan.popular
+                    ? "bg-white text-black"
+                    : "border border-white/10 bg-white/[0.04] text-white"
+                }`}
+              >
+                Get a Free Website Preview
+                <ArrowRight size={16} />
+              </a>
+            </motion.article>
+          ))}
+        </div>
+
+        <div className="mt-8 grid gap-4 rounded-[28px] border border-white/10 bg-white/[0.025] p-6 text-sm text-white/50 md:grid-cols-3">
+          <div>
+            <p className="font-medium text-white">Hosting & maintenance</p>
+            <p className="mt-2">$15/month or $150/year</p>
+          </div>
+          <div>
+            <p className="font-medium text-white">Domain</p>
+            <p className="mt-2">Paid separately by the client.</p>
+          </div>
+          <div>
+            <p className="font-medium text-white">Free preview</p>
+            <p className="mt-2">$0 upfront and no commitment.</p>
+          </div>
         </div>
       </section>
 
@@ -1037,6 +1213,67 @@ export default function Home() {
                 </div>
               );
             })}
+          </div>
+        </div>
+      </section>
+
+      {/* How It Works */}
+      <section id="process" className="relative z-10 mx-auto max-w-7xl px-6 py-32">
+        <div className="mx-auto max-w-3xl text-center">
+          <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-4 py-2 text-sm text-white/60">
+            <Rocket size={15} className="text-violet-300" /> How it works
+          </div>
+          <h2 className="mt-6 text-4xl font-semibold tracking-[-0.04em] sm:text-5xl md:text-6xl">
+            From idea to launch
+            <span className="block text-white/35">without the guesswork.</span>
+          </h2>
+          <p className="mx-auto mt-6 max-w-2xl text-lg leading-8 text-white/45">
+            A simple process designed to let you see the direction before committing to a full website project.
+          </p>
+        </div>
+        <div className="mt-16 grid gap-5 md:grid-cols-2 lg:grid-cols-4">
+          {processSteps.map((step, index) => (
+            <motion.div key={step.number} initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.5, delay: index * 0.08 }} className="rounded-[28px] border border-white/10 bg-white/[0.025] p-7">
+              <div className="flex h-11 w-11 items-center justify-center rounded-2xl border border-violet-400/20 bg-violet-500/10 text-sm font-semibold text-violet-300">{step.number}</div>
+              <h3 className="mt-7 text-xl font-medium">{step.title}</h3>
+              <p className="mt-4 leading-7 text-white/40">{step.description}</p>
+            </motion.div>
+          ))}
+        </div>
+      </section>
+
+      {/* FAQ */}
+      <section id="faq" className="relative z-10 mx-auto max-w-4xl px-6 py-32">
+        <div className="text-center">
+          <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-4 py-2 text-sm text-white/60">
+            <MessageSquare size={15} className="text-violet-300" /> Frequently asked questions
+          </div>
+          <h2 className="mt-6 text-4xl font-semibold tracking-[-0.04em] sm:text-5xl">Questions before we start?</h2>
+          <p className="mx-auto mt-5 max-w-2xl leading-7 text-white/45">Here are the details businesses usually want to know before starting a project with Webryxo.</p>
+        </div>
+        <div className="mt-12 space-y-4">
+          {faqs.map((faq) => (
+            <details key={faq.question} className="group rounded-[24px] border border-white/10 bg-white/[0.025] p-6">
+              <summary className="flex cursor-pointer list-none items-center justify-between gap-5 text-left font-medium">
+                <span>{faq.question}</span>
+                <ChevronDown size={18} className="shrink-0 text-violet-300 transition-transform duration-300 group-open:rotate-180" />
+              </summary>
+              <p className="mt-4 max-w-3xl leading-7 text-white/45">{faq.answer}</p>
+            </details>
+          ))}
+        </div>
+      </section>
+
+      {/* Final CTA */}
+      <section className="relative z-10 mx-auto max-w-7xl px-6 pb-10 pt-20">
+        <div className="relative overflow-hidden rounded-[36px] border border-violet-400/20 bg-gradient-to-br from-violet-500/[0.12] via-white/[0.03] to-fuchsia-500/[0.08] px-7 py-14 text-center sm:px-12 sm:py-16">
+          <div className="relative">
+            <Sparkles className="mx-auto text-violet-300" size={25} />
+            <h2 className="mx-auto mt-5 max-w-3xl text-4xl font-semibold tracking-[-0.04em] sm:text-5xl">See your new website before you pay.</h2>
+            <p className="mx-auto mt-5 max-w-2xl text-lg leading-8 text-white/50">Tell us about your business and request a free website preview. If you like the direction, we can take it from there.</p>
+            <a href="/book" className="mt-8 inline-flex items-center gap-2 rounded-full bg-white px-7 py-3.5 font-medium text-black transition hover:scale-[1.03]">
+              Request My Free Preview <ArrowRight size={18} />
+            </a>
           </div>
         </div>
       </section>
@@ -1200,6 +1437,7 @@ export default function Home() {
           <p>
             © {new Date().getFullYear()} Webryxo.
             All rights reserved.
+            Any Question? Email us at info@webryxo.com
           </p>
 
           <p>Designed & developed by Webryxo.</p>
