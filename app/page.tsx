@@ -593,56 +593,20 @@ export default function Home() {
         </div>
 
         {menuOpen && (
-          <div className="border-t border-white/10 bg-black/90 px-6 py-5 md:hidden">
+          <div className="border-t border-white/10 bg-black/95 px-6 py-5 backdrop-blur-2xl md:hidden">
             <div className="flex flex-col gap-4 text-sm text-white/65">
-              <a
-                href="#services"
-                onClick={() => setMenuOpen(false)}
-              >
-                Services
-              </a>
-
-              <a
-                href="#showcase"
-                onClick={() => setMenuOpen(false)}
-              >
-                Showcase
-              </a>
-
-              <a
-                href="#work"
-                onClick={() => setMenuOpen(false)}
-              >
-                Our Work
-              </a>
-
-              <a
-                href="#pricing"
-                onClick={() => setMenuOpen(false)}
-              >
-                Pricing
-              </a>
-
-              <a href="#process" onClick={() => setMenuOpen(false)}>
-                Process
-              </a>
-
-              <a href="#faq" onClick={() => setMenuOpen(false)}>
-                FAQ
-              </a>
-
-              <a
-                href="#about"
-                onClick={() => setMenuOpen(false)}
-              >
-                Why Webryxo
-              </a>
-
+              <a href="#work" onClick={() => setMenuOpen(false)}>Work</a>
+              <a href="#services" onClick={() => setMenuOpen(false)}>Services</a>
+              <a href="#process" onClick={() => setMenuOpen(false)}>Process</a>
+              <a href="#pricing" onClick={() => setMenuOpen(false)}>Pricing</a>
+              <a href="#about" onClick={() => setMenuOpen(false)}>About</a>
+              <a href="#faq" onClick={() => setMenuOpen(false)}>FAQ</a>
               <a
                 href="/book"
                 onClick={() => setMenuOpen(false)}
+                className="mt-2 inline-flex w-fit rounded-full bg-white px-5 py-2.5 font-medium text-black"
               >
-                Contact
+                Start a Project
               </a>
             </div>
           </div>
@@ -1115,23 +1079,27 @@ export default function Home() {
         id="pricing"
         className="relative z-10 mx-auto max-w-7xl px-6 py-32"
       >
-        <div className="mx-auto max-w-3xl text-center">
-          <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-4 py-2 text-sm text-white/60">
-            <Sparkles size={15} className="text-violet-300" />
-            Simple pricing
+        <div className="grid items-end gap-10 lg:grid-cols-[0.9fr_1.1fr]">
+          <div>
+            <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-4 py-2 text-sm text-white/60">
+              <Sparkles size={15} className="text-violet-300" />
+              Simple pricing
+            </div>
+
+            <h2 className="mt-6 text-5xl font-semibold leading-[0.96] tracking-[-0.055em] sm:text-6xl md:text-7xl">
+              Choose the level
+              <span className="block text-white/35">
+                that fits your business.
+              </span>
+            </h2>
           </div>
 
-          <h2 className="mt-6 text-4xl font-semibold tracking-[-0.04em] sm:text-5xl md:text-6xl">
-            Pick the right website
-            <span className="block bg-gradient-to-r from-violet-300 via-fuchsia-300 to-indigo-300 bg-clip-text text-transparent">
-              for your business.
-            </span>
-          </h2>
-
-          <p className="mx-auto mt-6 max-w-2xl text-lg leading-8 text-white/45">
-            Every project starts with a free website preview. You only move
-            forward when you are happy with the direction.
-          </p>
+          <div className="lg:pb-2">
+            <p className="max-w-2xl text-lg leading-8 text-white/45">
+              Every project starts with a free website preview. You only move
+              forward when you are happy with the direction.
+            </p>
+          </div>
         </div>
 
         <div className="mt-16 grid gap-6 lg:grid-cols-3">
@@ -1141,335 +1109,768 @@ export default function Home() {
               initial={{ opacity: 0, y: 35 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, amount: 0.2 }}
-              transition={{ duration: 0.55, delay: index * 0.08 }}
-              whileHover={{ y: -8 }}
-              className={`relative overflow-hidden rounded-[30px] border p-7 ${
+              transition={{
+                duration: 0.6,
+                delay: index * 0.08,
+                ease: [0.22, 1, 0.36, 1],
+              }}
+              whileHover={{ y: -10 }}
+              className={`relative overflow-hidden rounded-[32px] border p-7 sm:p-8 ${
                 plan.popular
-                  ? "border-violet-400/40 bg-violet-500/[0.08]"
+                  ? "border-violet-400/45 bg-gradient-to-br from-violet-500/[0.13] via-white/[0.035] to-fuchsia-500/[0.06]"
                   : "border-white/10 bg-white/[0.025]"
               }`}
             >
               {plan.popular && (
-                <div className="absolute right-5 top-5 rounded-full border border-violet-300/30 bg-violet-400/15 px-3 py-1 text-xs font-medium text-violet-200">
-                  Most Popular
-                </div>
+                <>
+                  <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-violet-500/[0.09] via-transparent to-fuchsia-500/[0.05]" />
+                  <div className="absolute right-5 top-5 rounded-full border border-violet-300/30 bg-violet-400/15 px-3 py-1 text-xs font-medium text-violet-200">
+                    Most Popular
+                  </div>
+                </>
               )}
 
-              <p className="text-sm font-medium text-violet-300">{plan.name}</p>
+              <div className="relative">
+                <div className="flex items-center justify-between">
+                  <p className="text-sm font-medium text-violet-300">
+                    {plan.name}
+                  </p>
+                  <span className="text-xs uppercase tracking-[0.18em] text-white/20">
+                    0{index + 1}
+                  </span>
+                </div>
 
-              <div className="mt-5 flex items-end gap-2">
-                <span className="text-5xl font-semibold tracking-[-0.04em]">
-                  {plan.price}
-                </span>
-                <span className="pb-1 text-sm text-white/35">one-time</span>
-              </div>
+                <div className="mt-6 flex items-end gap-2">
+                  <span className="text-6xl font-semibold tracking-[-0.055em]">
+                    {plan.price}
+                  </span>
+                  <span className="pb-1 text-sm text-white/35">
+                    one-time
+                  </span>
+                </div>
 
-              <p className="mt-5 min-h-[84px] leading-7 text-white/45">
-                {plan.description}
-              </p>
+                <p className="mt-5 min-h-[96px] leading-7 text-white/45">
+                  {plan.description}
+                </p>
 
-              <div className="my-7 h-px bg-white/10" />
+                <div className="my-7 h-px bg-white/10" />
 
-              <div className="space-y-4">
-                {plan.features.map((feature) => (
-                  <div
-                    key={feature}
-                    className="flex items-start gap-3 text-sm text-white/65"
-                  >
-                    <div className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-violet-400/10">
-                      <Check size={13} className="text-violet-300" />
+                <div className="space-y-4">
+                  {plan.features.map((feature) => (
+                    <div
+                      key={feature}
+                      className="flex items-start gap-3 text-sm text-white/65"
+                    >
+                      <div className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-violet-400/10">
+                        <Check size={13} className="text-violet-300" />
+                      </div>
+                      <span>{feature}</span>
                     </div>
-                    <span>{feature}</span>
-                  </div>
-                ))}
-              </div>
+                  ))}
+                </div>
 
-              <a
-                href="/book"
-                className={`mt-8 flex w-full items-center justify-center gap-2 rounded-2xl px-5 py-3.5 text-sm font-medium transition hover:scale-[1.02] ${
-                  plan.popular
-                    ? "bg-white text-black"
-                    : "border border-white/10 bg-white/[0.04] text-white"
-                }`}
-              >
-                Get a Free Website Preview
-                <ArrowRight size={16} />
-              </a>
+                <a
+                  href="/book"
+                  className={`mt-9 flex w-full items-center justify-center gap-2 rounded-2xl px-5 py-3.5 text-sm font-medium transition hover:scale-[1.02] ${
+                    plan.popular
+                      ? "bg-white text-black"
+                      : "border border-white/10 bg-white/[0.04] text-white hover:border-white/20"
+                  }`}
+                >
+                  Get a Free Website Preview
+                  <ArrowRight size={16} />
+                </a>
+              </div>
             </motion.article>
           ))}
         </div>
 
-        <div className="mt-8 grid gap-4 rounded-[28px] border border-white/10 bg-white/[0.025] p-6 text-sm text-white/50 md:grid-cols-3">
-          <div>
-            <p className="font-medium text-white">Hosting & maintenance</p>
-            <p className="mt-2">$15/month or $150/year</p>
+        <div className="mt-8 grid gap-4 lg:grid-cols-[1.15fr_0.85fr]">
+          <div className="rounded-[30px] border border-white/10 bg-white/[0.025] p-7 sm:p-8">
+            <p className="text-xs uppercase tracking-[0.22em] text-violet-300">
+              Hosting & maintenance
+            </p>
+
+            <div className="mt-5 flex flex-wrap items-end gap-x-4 gap-y-2">
+              <span className="text-4xl font-semibold tracking-[-0.04em]">
+                $15
+              </span>
+              <span className="pb-1 text-white/35">/ month</span>
+
+              <span className="mx-1 hidden h-7 w-px bg-white/10 sm:block" />
+
+              <span className="text-4xl font-semibold tracking-[-0.04em]">
+                $150
+              </span>
+              <span className="pb-1 text-white/35">/ year</span>
+            </div>
+
+            <p className="mt-5 max-w-2xl leading-7 text-white/42">
+              Keep your website online, secure, monitored, and maintained after launch.
+            </p>
           </div>
-          <div>
-            <p className="font-medium text-white">Domain</p>
-            <p className="mt-2">Paid separately by the client.</p>
-          </div>
-          <div>
-            <p className="font-medium text-white">Free preview</p>
-            <p className="mt-2">$0 upfront and no commitment.</p>
+
+          <div className="rounded-[30px] border border-white/10 bg-gradient-to-br from-violet-500/[0.08] via-white/[0.025] to-fuchsia-500/[0.05] p-7 sm:p-8">
+            <p className="text-xs uppercase tracking-[0.22em] text-violet-300">
+              No pressure
+            </p>
+
+            <h3 className="mt-4 text-2xl font-medium tracking-[-0.025em]">
+              See the direction before you commit.
+            </h3>
+
+            <p className="mt-4 leading-7 text-white/42">
+              Your first website preview is free. If you like the direction,
+              we’ll take it from there.
+            </p>
           </div>
         </div>
       </section>
 
-      {/* About */}
+      {/* About / Why Webryxo */}
       <section
         id="about"
         className="relative z-10 mx-auto max-w-7xl px-6 py-32"
       >
-        <div className="grid gap-16 lg:grid-cols-2">
-          <div>
-            <p className="text-sm text-violet-300">
+        <div className="grid gap-14 lg:grid-cols-[0.9fr_1.1fr]">
+          <div className="lg:sticky lg:top-28 lg:self-start">
+            <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-4 py-2 text-sm text-white/60">
+              <BadgeCheck size={15} className="text-violet-300" />
               Why Webryxo
-            </p>
+            </div>
 
-            <h2 className="mt-4 text-4xl font-semibold sm:text-5xl">
-              Your website should work for your business.
+            <h2 className="mt-6 text-5xl font-semibold leading-[0.96] tracking-[-0.055em] sm:text-6xl md:text-7xl">
+              Your website should
+              <span className="block text-white/35">
+                earn attention.
+              </span>
             </h2>
 
-            <p className="mt-6 text-lg leading-8 text-white/45">
-              A strong website builds trust, explains what
-              you offer, and makes it easy for customers to
-              take the next step.
+            <p className="mt-7 max-w-xl text-lg leading-8 text-white/45">
+              A strong website should make your business look credible,
+              explain what you do clearly, and make it easy for customers
+              to take the next step.
             </p>
+
+            <div className="mt-9 flex flex-wrap gap-3 text-xs uppercase tracking-[0.18em] text-white/25">
+              <span>Clarity</span>
+              <span>•</span>
+              <span>Trust</span>
+              <span>•</span>
+              <span>Performance</span>
+              <span>•</span>
+              <span>Conversion</span>
+            </div>
           </div>
 
-          <div className="grid gap-4 sm:grid-cols-2">
-            {benefits.map((benefit) => {
+          <div className="space-y-5">
+            {benefits.map((benefit, index) => {
               const Icon = benefit.icon;
 
               return (
-                <div
+                <motion.div
                   key={benefit.title}
-                  className="rounded-[26px] border border-white/10 bg-white/[0.025] p-6"
+                  initial={{ opacity: 0, y: 30 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true, amount: 0.22 }}
+                  transition={{
+                    duration: 0.55,
+                    delay: index * 0.07,
+                  }}
+                  whileHover={{ x: 8 }}
+                  className="group relative overflow-hidden rounded-[30px] border border-white/10 bg-white/[0.025] p-7 sm:p-8"
                 >
-                  <Icon
-                    size={21}
-                    className="text-violet-300"
-                  />
+                  <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-violet-500/[0.08] via-transparent to-fuchsia-500/[0.04] opacity-0 transition duration-500 group-hover:opacity-100" />
 
-                  <h3 className="mt-6 text-lg font-medium">
-                    {benefit.title}
-                  </h3>
+                  <div className="relative grid gap-5 sm:grid-cols-[auto_1fr_auto] sm:items-center">
+                    <div className="flex h-12 w-12 items-center justify-center rounded-2xl border border-white/10 bg-black/25">
+                      <Icon size={21} className="text-violet-300" />
+                    </div>
 
-                  <p className="mt-3 leading-7 text-white/40">
-                    {benefit.description}
-                  </p>
-                </div>
+                    <div>
+                      <div className="flex items-center gap-3">
+                        <span className="text-[11px] uppercase tracking-[0.2em] text-white/20">
+                          0{index + 1}
+                        </span>
+
+                        <h3 className="text-2xl font-medium tracking-[-0.025em]">
+                          {benefit.title}
+                        </h3>
+                      </div>
+
+                      <p className="mt-3 max-w-2xl leading-7 text-white/42">
+                        {benefit.description}
+                      </p>
+                    </div>
+
+                    <div className="hidden h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-white/[0.025] text-white/30 transition duration-300 group-hover:bg-white group-hover:text-black sm:flex">
+                      <ArrowRight size={15} />
+                    </div>
+                  </div>
+                </motion.div>
               );
             })}
           </div>
         </div>
-      </section>
 
-      {/* How It Works */}
-      <section id="process" className="relative z-10 mx-auto max-w-7xl px-6 py-32">
-        <div className="mx-auto max-w-3xl text-center">
-          <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-4 py-2 text-sm text-white/60">
-            <Rocket size={15} className="text-violet-300" /> How it works
-          </div>
-          <h2 className="mt-6 text-4xl font-semibold tracking-[-0.04em] sm:text-5xl md:text-6xl">
-            From idea to launch
-            <span className="block text-white/35">without the guesswork.</span>
-          </h2>
-          <p className="mx-auto mt-6 max-w-2xl text-lg leading-8 text-white/45">
-            A simple process designed to let you see the direction before committing to a full website project.
-          </p>
-        </div>
-        <div className="mt-16 grid gap-5 md:grid-cols-2 lg:grid-cols-4">
-          {processSteps.map((step, index) => (
-            <motion.div key={step.number} initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.5, delay: index * 0.08 }} className="rounded-[28px] border border-white/10 bg-white/[0.025] p-7">
-              <div className="flex h-11 w-11 items-center justify-center rounded-2xl border border-violet-400/20 bg-violet-500/10 text-sm font-semibold text-violet-300">{step.number}</div>
-              <h3 className="mt-7 text-xl font-medium">{step.title}</h3>
-              <p className="mt-4 leading-7 text-white/40">{step.description}</p>
-            </motion.div>
-          ))}
-        </div>
-      </section>
+        <div className="mt-20 grid gap-5 lg:grid-cols-3">
+          <motion.div
+            initial={{ opacity: 0, y: 25 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="rounded-[30px] border border-white/10 bg-white/[0.025] p-7"
+          >
+            <p className="text-xs uppercase tracking-[0.22em] text-violet-300">
+              Designed for trust
+            </p>
+            <h3 className="mt-4 text-2xl font-medium tracking-[-0.03em]">
+              Look established from the first click.
+            </h3>
+            <p className="mt-4 leading-7 text-white/42">
+              Clean layouts, strong typography, and polished visual systems help
+              your business feel credible before a customer ever contacts you.
+            </p>
+          </motion.div>
 
-      {/* FAQ */}
-      <section id="faq" className="relative z-10 mx-auto max-w-4xl px-6 py-32">
-        <div className="text-center">
-          <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-4 py-2 text-sm text-white/60">
-            <MessageSquare size={15} className="text-violet-300" /> Frequently asked questions
-          </div>
-          <h2 className="mt-6 text-4xl font-semibold tracking-[-0.04em] sm:text-5xl">Questions before we start?</h2>
-          <p className="mx-auto mt-5 max-w-2xl leading-7 text-white/45">Here are the details businesses usually want to know before starting a project with Webryxo.</p>
-        </div>
-        <div className="mt-12 space-y-4">
-          {faqs.map((faq) => (
-            <details key={faq.question} className="group rounded-[24px] border border-white/10 bg-white/[0.025] p-6">
-              <summary className="flex cursor-pointer list-none items-center justify-between gap-5 text-left font-medium">
-                <span>{faq.question}</span>
-                <ChevronDown size={18} className="shrink-0 text-violet-300 transition-transform duration-300 group-open:rotate-180" />
-              </summary>
-              <p className="mt-4 max-w-3xl leading-7 text-white/45">{faq.answer}</p>
-            </details>
-          ))}
-        </div>
-      </section>
+          <motion.div
+            initial={{ opacity: 0, y: 25 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.08 }}
+            className="rounded-[30px] border border-white/10 bg-gradient-to-br from-violet-500/[0.10] via-white/[0.025] to-fuchsia-500/[0.05] p-7"
+          >
+            <p className="text-xs uppercase tracking-[0.22em] text-violet-300">
+              Built for action
+            </p>
+            <h3 className="mt-4 text-2xl font-medium tracking-[-0.03em]">
+              Make the next step obvious.
+            </h3>
+            <p className="mt-4 leading-7 text-white/42">
+              Calls, bookings, quote requests, menus, service pages, and contact
+              forms are structured around what customers need to do next.
+            </p>
+          </motion.div>
 
-      {/* Final CTA */}
-      <section className="relative z-10 mx-auto max-w-7xl px-6 pb-10 pt-20">
-        <div className="relative overflow-hidden rounded-[36px] border border-violet-400/20 bg-gradient-to-br from-violet-500/[0.12] via-white/[0.03] to-fuchsia-500/[0.08] px-7 py-14 text-center sm:px-12 sm:py-16">
-          <div className="relative">
-            <Sparkles className="mx-auto text-violet-300" size={25} />
-            <h2 className="mx-auto mt-5 max-w-3xl text-4xl font-semibold tracking-[-0.04em] sm:text-5xl">See your new website before you pay.</h2>
-            <p className="mx-auto mt-5 max-w-2xl text-lg leading-8 text-white/50">Tell us about your business and request a free website preview. If you like the direction, we can take it from there.</p>
-            <a href="/book" className="mt-8 inline-flex items-center gap-2 rounded-full bg-white px-7 py-3.5 font-medium text-black transition hover:scale-[1.03]">
-              Request My Free Preview <ArrowRight size={18} />
+          <motion.div
+            initial={{ opacity: 0, y: 25 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.16 }}
+            className="rounded-[30px] border border-white/10 bg-white/[0.025] p-7"
+          >
+            <p className="text-xs uppercase tracking-[0.22em] text-violet-300">
+              Built to last
+            </p>
+            <h3 className="mt-4 text-2xl font-medium tracking-[-0.03em]">
+              Fast, responsive, and easy to grow.
+            </h3>
+            <p className="mt-4 leading-7 text-white/42">
+              Modern development gives your website a strong foundation for
+              future pages, features, integrations, and business growth.
+            </p>
+          </motion.div>
+        </div>
+
+        <div className="mt-8 overflow-hidden rounded-[36px] border border-white/10 bg-gradient-to-br from-white/[0.035] via-violet-500/[0.07] to-fuchsia-500/[0.04] p-8 sm:p-11">
+          <div className="grid items-center gap-8 lg:grid-cols-[1fr_auto]">
+            <div>
+              <p className="text-xs uppercase tracking-[0.22em] text-violet-300">
+                A better first impression
+              </p>
+
+              <h3 className="mt-4 max-w-3xl text-3xl font-semibold tracking-[-0.035em] sm:text-4xl">
+                Your website is often the first conversation your business has with a customer.
+              </h3>
+
+              <p className="mt-5 max-w-2xl leading-7 text-white/45">
+                We make sure that conversation feels clear, modern, professional,
+                and worth continuing.
+              </p>
+            </div>
+
+            <a
+              href="/book"
+              className="inline-flex items-center justify-center gap-2 rounded-full bg-white px-7 py-3.5 font-medium text-black transition hover:scale-[1.03]"
+            >
+              Start a Project
+              <ArrowRight size={17} />
             </a>
           </div>
         </div>
       </section>
 
-      {/* Contact */}
+      {/* Process */}
       <section
-        id="contact"
+        id="process"
         className="relative z-10 mx-auto max-w-7xl px-6 py-32"
       >
-        <div className="grid gap-14 rounded-[36px] border border-white/10 bg-white/[0.025] p-7 sm:p-10 lg:grid-cols-[0.85fr_1.15fr] lg:p-14">
-          <div>
-            <div className="inline-flex items-center gap-2 text-sm text-violet-300">
-              <Send size={15} />
-              Start a project
+        <div className="grid gap-14 lg:grid-cols-[0.78fr_1.22fr]">
+          <div className="lg:sticky lg:top-28 lg:self-start">
+            <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-4 py-2 text-sm text-white/60">
+              <Rocket size={15} className="text-violet-300" />
+              How it works
             </div>
 
-            <h2 className="mt-5 text-4xl font-semibold sm:text-5xl">
-              Want a better website?
-              <span className="block text-violet-300">
-                Let's build it.
+            <h2 className="mt-6 text-5xl font-semibold leading-[0.96] tracking-[-0.055em] sm:text-6xl md:text-7xl">
+              From first idea
+              <span className="block text-white/35">
+                to final launch.
               </span>
             </h2>
 
-            <p className="mt-6 text-lg leading-8 text-white/45">
-              Tell us about your business and what you're
-              looking for.
+            <p className="mt-7 max-w-xl text-lg leading-8 text-white/45">
+              A clear process designed to keep you involved, reduce surprises,
+              and make sure the final website feels right for your business.
             </p>
 
-            <div className="mt-10 space-y-5 text-white/50">
-              <p className="flex items-center gap-3">
-                <Clock3 size={18} />
-                Quick response
-              </p>
-
-              <p className="flex items-center gap-3">
-                <MapPin size={18} />
-                Massachusetts
-              </p>
-
-              <p className="flex items-center gap-3">
-                <Mail size={18} />
-                Webryxo@gmail.com
-              </p>
+            <div className="mt-10 flex flex-wrap gap-3 text-xs uppercase tracking-[0.18em] text-white/25">
+              <span>Strategy</span>
+              <span>•</span>
+              <span>Design</span>
+              <span>•</span>
+              <span>Build</span>
+              <span>•</span>
+              <span>Launch</span>
             </div>
           </div>
 
-          <div className="rounded-[28px] border border-white/10 bg-black/25 p-6">
-            {submitted ? (
-              <div className="flex min-h-[480px] flex-col items-center justify-center text-center">
-                <CheckCircle2
-                  size={40}
-                  className="text-violet-300"
+          <div className="relative">
+            <div className="absolute bottom-0 left-[27px] top-0 hidden w-px bg-gradient-to-b from-violet-400/50 via-white/10 to-transparent sm:block" />
+
+            <div className="space-y-5">
+              {processSteps.map((step, index) => (
+                <motion.div
+                  key={step.number}
+                  initial={{ opacity: 0, x: 35 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  viewport={{ once: true, amount: 0.25 }}
+                  transition={{
+                    duration: 0.6,
+                    delay: index * 0.08,
+                    ease: [0.22, 1, 0.36, 1],
+                  }}
+                  className="group relative sm:pl-20"
+                >
+                  <div className="absolute left-0 top-7 z-10 hidden h-14 w-14 items-center justify-center rounded-2xl border border-violet-400/25 bg-[#09070f] text-sm font-semibold text-violet-300 shadow-[0_0_30px_rgba(124,58,237,0.14)] sm:flex">
+                    {step.number}
+                  </div>
+
+                  <div className="relative overflow-hidden rounded-[30px] border border-white/10 bg-white/[0.025] p-7 sm:p-9">
+                    <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-violet-500/[0.08] via-transparent to-fuchsia-500/[0.035] opacity-0 transition duration-500 group-hover:opacity-100" />
+
+                    <div className="relative">
+                      <div className="flex items-center justify-between gap-4">
+                        <div>
+                          <p className="mb-3 text-xs uppercase tracking-[0.2em] text-violet-300 sm:hidden">
+                            Step {step.number}
+                          </p>
+
+                          <h3 className="text-2xl font-medium tracking-[-0.025em] sm:text-3xl">
+                            {step.title}
+                          </h3>
+                        </div>
+
+                        <div className="hidden h-11 w-11 items-center justify-center rounded-full border border-white/10 bg-white/[0.025] text-white/30 transition duration-300 group-hover:bg-white group-hover:text-black sm:flex">
+                          <ArrowRight size={16} />
+                        </div>
+                      </div>
+
+                      <p className="mt-5 max-w-2xl text-base leading-8 text-white/42">
+                        {step.description}
+                      </p>
+
+                      <div className="mt-7 h-px w-full bg-white/[0.06]" />
+
+                      <div className="mt-5 flex flex-wrap gap-2 text-xs text-white/35">
+                        {index === 0 && (
+                          <>
+                            <span className="rounded-full border border-white/10 px-3 py-1.5">Goals</span>
+                            <span className="rounded-full border border-white/10 px-3 py-1.5">Business needs</span>
+                            <span className="rounded-full border border-white/10 px-3 py-1.5">Direction</span>
+                          </>
+                        )}
+
+                        {index === 1 && (
+                          <>
+                            <span className="rounded-full border border-white/10 px-3 py-1.5">Visual concept</span>
+                            <span className="rounded-full border border-white/10 px-3 py-1.5">Layout</span>
+                            <span className="rounded-full border border-white/10 px-3 py-1.5">Experience</span>
+                          </>
+                        )}
+
+                        {index === 2 && (
+                          <>
+                            <span className="rounded-full border border-white/10 px-3 py-1.5">Feedback</span>
+                            <span className="rounded-full border border-white/10 px-3 py-1.5">Revisions</span>
+                            <span className="rounded-full border border-white/10 px-3 py-1.5">Approval</span>
+                          </>
+                        )}
+
+                        {index === 3 && (
+                          <>
+                            <span className="rounded-full border border-white/10 px-3 py-1.5">Development</span>
+                            <span className="rounded-full border border-white/10 px-3 py-1.5">Domain</span>
+                            <span className="rounded-full border border-white/10 px-3 py-1.5">Launch</span>
+                          </>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        <div className="mt-20 overflow-hidden rounded-[36px] border border-violet-400/20 bg-gradient-to-br from-violet-500/[0.11] via-white/[0.025] to-fuchsia-500/[0.07] p-8 sm:p-11">
+          <div className="grid items-center gap-8 lg:grid-cols-[1fr_auto]">
+            <div>
+              <p className="text-xs uppercase tracking-[0.22em] text-violet-300">
+                See the direction first
+              </p>
+
+              <h3 className="mt-4 text-3xl font-semibold tracking-[-0.035em] sm:text-4xl">
+                Start with a free website preview.
+              </h3>
+
+              <p className="mt-4 max-w-2xl leading-7 text-white/45">
+                Tell us about your business and we’ll put together a direction
+                so you can see what Webryxo can build before you decide to move forward.
+              </p>
+            </div>
+
+            <a
+              href="/book"
+              className="inline-flex items-center justify-center gap-2 rounded-full bg-white px-7 py-3.5 font-medium text-black transition hover:scale-[1.03]"
+            >
+              Request a Free Preview
+              <ArrowRight size={17} />
+            </a>
+          </div>
+        </div>
+      </section>
+
+      {/* FAQ */}
+      <section id="faq" className="relative z-10 mx-auto max-w-7xl px-6 py-32">
+        <div className="grid gap-14 lg:grid-cols-[0.78fr_1.22fr]">
+          <div className="lg:sticky lg:top-28 lg:self-start">
+            <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-4 py-2 text-sm text-white/60">
+              <MessageSquare size={15} className="text-violet-300" />
+              Frequently asked questions
+            </div>
+
+            <h2 className="mt-6 text-5xl font-semibold leading-[0.96] tracking-[-0.055em] sm:text-6xl md:text-7xl">
+              Questions before
+              <span className="block text-white/35">we get started?</span>
+            </h2>
+
+            <p className="mt-7 max-w-xl text-lg leading-8 text-white/45">
+              Here are the things businesses usually want to know before
+              starting a project with Webryxo.
+            </p>
+
+            <a
+              href="/book"
+              className="mt-8 inline-flex items-center gap-2 rounded-full border border-white/12 bg-white/[0.035] px-6 py-3 text-sm font-medium text-white transition hover:border-white/25 hover:bg-white/[0.06]"
+            >
+              Ask us anything
+              <ArrowRight size={16} />
+            </a>
+          </div>
+
+          <div className="space-y-4">
+            {faqs.map((faq, index) => (
+              <motion.details
+                key={faq.question}
+                initial={{ opacity: 0, y: 22 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, amount: 0.15 }}
+                transition={{ duration: 0.45, delay: index * 0.045 }}
+                className="group overflow-hidden rounded-[26px] border border-white/10 bg-white/[0.025]"
+              >
+                <summary className="flex cursor-pointer list-none items-center justify-between gap-5 px-6 py-6 text-left sm:px-7">
+                  <div className="flex items-center gap-4">
+                    <span className="text-[11px] uppercase tracking-[0.2em] text-violet-300/70">
+                      0{index + 1}
+                    </span>
+                    <span className="text-base font-medium sm:text-lg">
+                      {faq.question}
+                    </span>
+                  </div>
+
+                  <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-white/10 bg-white/[0.03] text-white/50 transition group-open:rotate-180 group-open:bg-white group-open:text-black">
+                    <ChevronDown size={16} />
+                  </div>
+                </summary>
+
+                <div className="border-t border-white/[0.06] px-6 py-6 sm:px-7">
+                  <p className="max-w-3xl leading-7 text-white/45">{faq.answer}</p>
+                </div>
+              </motion.details>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Final CTA */}
+      <section className="relative z-10 mx-auto max-w-7xl px-6 py-20">
+        <motion.div
+          initial={{ opacity: 0, y: 35 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.25 }}
+          transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+          className="relative overflow-hidden rounded-[42px] border border-violet-400/20 bg-gradient-to-br from-violet-500/[0.14] via-white/[0.03] to-fuchsia-500/[0.09] px-7 py-16 sm:px-12 sm:py-20"
+        >
+          <div className="pointer-events-none absolute -left-24 top-1/2 h-80 w-80 -translate-y-1/2 rounded-full bg-violet-500/[0.12] blur-[100px]" />
+          <div className="pointer-events-none absolute -right-20 top-0 h-72 w-72 rounded-full bg-fuchsia-500/[0.10] blur-[100px]" />
+
+          <div className="relative mx-auto max-w-4xl text-center">
+            <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl border border-violet-300/20 bg-violet-400/10">
+              <Sparkles className="text-violet-300" size={22} />
+            </div>
+
+            <p className="mt-6 text-xs uppercase tracking-[0.24em] text-violet-300">
+              Ready when you are
+            </p>
+
+            <h2 className="mt-5 text-4xl font-semibold leading-[0.98] tracking-[-0.05em] sm:text-5xl md:text-6xl">
+              See what your next
+              <span className="block bg-gradient-to-r from-white via-violet-200 to-fuchsia-300 bg-clip-text text-transparent">
+                website could become.
+              </span>
+            </h2>
+
+            <p className="mx-auto mt-6 max-w-2xl text-lg leading-8 text-white/48">
+              Tell us about your business and request a free website preview.
+              See the direction first, then decide whether you want to move forward.
+            </p>
+
+            <div className="mt-9 flex flex-wrap justify-center gap-4">
+              <a
+                href="/book"
+                className="group inline-flex items-center gap-2 rounded-full bg-white px-7 py-3.5 font-medium text-black transition hover:scale-[1.03]"
+              >
+                Request My Free Preview
+                <ArrowRight
+                  size={18}
+                  className="transition-transform duration-300 group-hover:translate-x-1"
                 />
+              </a>
 
-                <h3 className="mt-5 text-2xl">
-                  Message sent!
-                </h3>
+              <a
+                href="#work"
+                className="inline-flex items-center rounded-full border border-white/12 bg-black/15 px-7 py-3.5 text-white/80 transition hover:border-white/25 hover:bg-white/[0.05]"
+              >
+                View Our Work
+              </a>
+            </div>
+          </div>
+        </motion.div>
+      </section>
 
-                <p className="mt-3 text-white/40">
-                  We'll get back to you soon.
+      {/* Contact */}
+      <section id="contact" className="relative z-10 mx-auto max-w-7xl px-6 py-32">
+        <div className="mb-14 max-w-3xl">
+          <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-4 py-2 text-sm text-white/60">
+            <Send size={15} className="text-violet-300" />
+            Start a project
+          </div>
+
+          <h2 className="mt-6 text-5xl font-semibold leading-[0.96] tracking-[-0.055em] sm:text-6xl md:text-7xl">
+            Tell us what
+            <span className="block text-white/35">you want to build.</span>
+          </h2>
+        </div>
+
+        <div className="grid gap-8 rounded-[38px] border border-white/10 bg-white/[0.025] p-6 sm:p-8 lg:grid-cols-[0.82fr_1.18fr] lg:p-10">
+          <div className="flex flex-col justify-between rounded-[30px] border border-white/10 bg-gradient-to-br from-violet-500/[0.09] via-black/20 to-fuchsia-500/[0.05] p-7 sm:p-9">
+            <div>
+              <p className="text-xs uppercase tracking-[0.22em] text-violet-300">
+                Let’s talk
+              </p>
+
+              <h3 className="mt-5 text-3xl font-semibold tracking-[-0.035em] sm:text-4xl">
+                Have a business?
+                <span className="block text-white/35">
+                  Let’s improve how it looks online.
+                </span>
+              </h3>
+
+              <p className="mt-6 max-w-lg text-lg leading-8 text-white/45">
+                Share a few details about your business, what you need, and
+                what you want your website to accomplish.
+              </p>
+            </div>
+
+            <div className="mt-12 space-y-4">
+              <div className="rounded-2xl border border-white/10 bg-black/20 p-4">
+                <p className="text-xs uppercase tracking-[0.18em] text-white/25">
+                  Response
+                </p>
+                <p className="mt-2 flex items-center gap-2 text-sm text-white/65">
+                  <Clock3 size={16} className="text-violet-300" />
+                  Quick response
                 </p>
               </div>
-            ) : (
-              <form
-                onSubmit={handleSubmit}
-                className="space-y-5"
-              >
-                <div className="grid gap-4 sm:grid-cols-2">
-                  <input
-                    name="name"
-                    required
-                    placeholder="Your name"
-                    className="rounded-2xl border border-white/10 bg-white/[0.04] px-4 py-3.5 outline-none"
-                  />
 
-                  <input
-                    name="business"
-                    required
-                    placeholder="Business name"
-                    className="rounded-2xl border border-white/10 bg-white/[0.04] px-4 py-3.5 outline-none"
-                  />
+              <div className="rounded-2xl border border-white/10 bg-black/20 p-4">
+                <p className="text-xs uppercase tracking-[0.18em] text-white/25">
+                  Based in
+                </p>
+                <p className="mt-2 flex items-center gap-2 text-sm text-white/65">
+                  <MapPin size={16} className="text-violet-300" />
+                  Massachusetts
+                </p>
+              </div>
+
+              <div className="rounded-2xl border border-white/10 bg-black/20 p-4">
+                <p className="text-xs uppercase tracking-[0.18em] text-white/25">
+                  Email
+                </p>
+                <a
+                  href="mailto:info@webryxo.com"
+                  className="mt-2 flex items-center gap-2 text-sm text-white/65 transition hover:text-white"
+                >
+                  <Mail size={16} className="text-violet-300" />
+                  info@webryxo.com
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <div className="rounded-[30px] border border-white/10 bg-black/25 p-6 sm:p-8">
+            {submitted ? (
+              <motion.div
+                initial={{ opacity: 0, scale: 0.96 }}
+                animate={{ opacity: 1, scale: 1 }}
+                className="flex min-h-[560px] flex-col items-center justify-center text-center"
+              >
+                <div className="flex h-16 w-16 items-center justify-center rounded-full border border-violet-400/25 bg-violet-500/10">
+                  <CheckCircle2 size={30} className="text-violet-300" />
                 </div>
 
-                <input
-                  name="email"
-                  type="email"
-                  required
-                  placeholder="Email address"
-                  className="w-full rounded-2xl border border-white/10 bg-white/[0.04] px-4 py-3.5 outline-none"
-                />
+                <h3 className="mt-6 text-3xl font-medium">Message sent.</h3>
 
-                <input
-                  name="phone"
-                  placeholder="Phone number"
-                  className="w-full rounded-2xl border border-white/10 bg-white/[0.04] px-4 py-3.5 outline-none"
-                />
+                <p className="mt-3 max-w-md leading-7 text-white/45">
+                  Thanks for reaching out. We’ll review your project details
+                  and get back to you soon.
+                </p>
+              </motion.div>
+            ) : (
+              <form onSubmit={handleSubmit} className="space-y-5">
+                <div className="grid gap-4 sm:grid-cols-2">
+                  <label className="space-y-2">
+                    <span className="text-xs uppercase tracking-[0.16em] text-white/30">
+                      Your name
+                    </span>
+                    <input
+                      name="name"
+                      required
+                      placeholder="John Smith"
+                      className="w-full rounded-2xl border border-white/10 bg-white/[0.04] px-4 py-3.5 text-white outline-none transition placeholder:text-white/20 focus:border-violet-400/40"
+                    />
+                  </label>
 
-                <select
-                  name="project"
-                  required
-                  defaultValue=""
-                  className="w-full rounded-2xl border border-white/10 bg-[#111] px-4 py-3.5"
-                >
-                  <option value="" disabled>
-                    What do you need?
-                  </option>
+                  <label className="space-y-2">
+                    <span className="text-xs uppercase tracking-[0.16em] text-white/30">
+                      Business
+                    </span>
+                    <input
+                      name="business"
+                      required
+                      placeholder="Your business name"
+                      className="w-full rounded-2xl border border-white/10 bg-white/[0.04] px-4 py-3.5 text-white outline-none transition placeholder:text-white/20 focus:border-violet-400/40"
+                    />
+                  </label>
+                </div>
 
-                  <option value="website">
-                    New Website
-                  </option>
+                <div className="grid gap-4 sm:grid-cols-2">
+                  <label className="space-y-2">
+                    <span className="text-xs uppercase tracking-[0.16em] text-white/30">
+                      Email
+                    </span>
+                    <input
+                      name="email"
+                      type="email"
+                      required
+                      placeholder="you@business.com"
+                      className="w-full rounded-2xl border border-white/10 bg-white/[0.04] px-4 py-3.5 text-white outline-none transition placeholder:text-white/20 focus:border-violet-400/40"
+                    />
+                  </label>
 
-                  <option value="redesign">
-                    Website Redesign
-                  </option>
+                  <label className="space-y-2">
+                    <span className="text-xs uppercase tracking-[0.16em] text-white/30">
+                      Phone
+                    </span>
+                    <input
+                      name="phone"
+                      placeholder="Optional"
+                      className="w-full rounded-2xl border border-white/10 bg-white/[0.04] px-4 py-3.5 text-white outline-none transition placeholder:text-white/20 focus:border-violet-400/40"
+                    />
+                  </label>
+                </div>
 
-                  <option value="custom">
-                    Custom Project
-                  </option>
-                </select>
+                <label className="block space-y-2">
+                  <span className="text-xs uppercase tracking-[0.16em] text-white/30">
+                    Project type
+                  </span>
+                  <select
+                    name="project"
+                    required
+                    defaultValue=""
+                    className="w-full rounded-2xl border border-white/10 bg-[#101014] px-4 py-3.5 text-white outline-none transition focus:border-violet-400/40"
+                  >
+                    <option value="" disabled>What do you need?</option>
+                    <option value="website">New Website</option>
+                    <option value="redesign">Website Redesign</option>
+                    <option value="custom">Custom Project</option>
+                  </select>
+                </label>
 
-                <input
-                  name="website"
-                  placeholder="Current website (optional)"
-                  className="w-full rounded-2xl border border-white/10 bg-white/[0.04] px-4 py-3.5 outline-none"
-                />
+                <label className="block space-y-2">
+                  <span className="text-xs uppercase tracking-[0.16em] text-white/30">
+                    Current website
+                  </span>
+                  <input
+                    name="website"
+                    placeholder="Optional — your current website"
+                    className="w-full rounded-2xl border border-white/10 bg-white/[0.04] px-4 py-3.5 text-white outline-none transition placeholder:text-white/20 focus:border-violet-400/40"
+                  />
+                </label>
 
-                <textarea
-                  name="message"
-                  required
-                  rows={5}
-                  placeholder="Tell us about your project..."
-                  className="w-full resize-none rounded-2xl border border-white/10 bg-white/[0.04] px-4 py-3.5 outline-none"
-                />
+                <label className="block space-y-2">
+                  <span className="text-xs uppercase tracking-[0.16em] text-white/30">
+                    Project details
+                  </span>
+                  <textarea
+                    name="message"
+                    required
+                    rows={6}
+                    placeholder="Tell us about your business, your goals, and what you want the website to do..."
+                    className="w-full resize-none rounded-2xl border border-white/10 bg-white/[0.04] px-4 py-3.5 text-white outline-none transition placeholder:text-white/20 focus:border-violet-400/40"
+                  />
+                </label>
 
                 <button
                   type="submit"
                   disabled={sending}
-                  className="flex w-full items-center justify-center gap-2 rounded-2xl bg-white px-5 py-4 font-medium text-black disabled:opacity-60"
+                  className="group flex w-full items-center justify-center gap-2 rounded-2xl bg-white px-5 py-4 font-medium text-black transition hover:scale-[1.01] disabled:cursor-not-allowed disabled:opacity-60"
                 >
-                  {sending
-                    ? "Sending..."
-                    : "Request My Free Website Preview"}
-
-                  {!sending && <ArrowRight size={17} />}
+                  {sending ? "Sending..." : "Request My Free Website Preview"}
+                  {!sending && (
+                    <ArrowRight
+                      size={17}
+                      className="transition-transform duration-300 group-hover:translate-x-1"
+                    />
+                  )}
                 </button>
 
+                <p className="text-center text-xs leading-6 text-white/25">
+                  Free preview. No commitment required.
+                </p>
+
                 {formError && (
-                  <p className="text-center text-sm text-red-400">
+                  <p className="rounded-xl border border-red-400/20 bg-red-400/[0.07] p-3 text-center text-sm text-red-300">
                     {formError}
                   </p>
                 )}
@@ -1481,14 +1882,71 @@ export default function Home() {
 
       {/* Footer */}
       <footer className="relative z-10 border-t border-white/10">
-        <div className="mx-auto flex max-w-7xl flex-col justify-between gap-5 px-6 py-10 text-sm text-white/30 sm:flex-row">
-          <p>
-            © {new Date().getFullYear()} Webryxo.
-            All rights reserved.
-            Any Question? Email us at info@webryxo.com
-          </p>
+        <div className="mx-auto max-w-7xl px-6 py-12">
+          <div className="grid gap-10 md:grid-cols-[1.2fr_0.8fr_0.8fr]">
+            <div>
+              <a href="#top" className="inline-flex items-center gap-3">
+                <div className="relative h-10 w-10 overflow-hidden rounded-xl">
+                  <Image
+                    src="/icon.png"
+                    alt="Webryxo logo"
+                    fill
+                    sizes="40px"
+                    className="object-cover"
+                  />
+                </div>
 
-          <p>Designed & developed by Webryxo.</p>
+                <span className="text-xl font-semibold">
+                  Webryxo<span className="text-violet-400">.</span>
+                </span>
+              </a>
+
+              <p className="mt-5 max-w-sm leading-7 text-white/35">
+                Modern websites and digital experiences built to help
+                businesses look professional, build trust, and grow online.
+              </p>
+            </div>
+
+            <div>
+              <p className="text-xs uppercase tracking-[0.2em] text-white/25">
+                Explore
+              </p>
+
+              <div className="mt-5 flex flex-col gap-3 text-sm text-white/45">
+                <a href="#work" className="transition hover:text-white">Work</a>
+                <a href="#services" className="transition hover:text-white">Services</a>
+                <a href="#process" className="transition hover:text-white">Process</a>
+                <a href="#pricing" className="transition hover:text-white">Pricing</a>
+                <a href="#faq" className="transition hover:text-white">FAQ</a>
+              </div>
+            </div>
+
+            <div>
+              <p className="text-xs uppercase tracking-[0.2em] text-white/25">
+                Contact
+              </p>
+
+              <div className="mt-5 flex flex-col gap-3 text-sm text-white/45">
+                <a
+                  href="mailto:info@webryxo.com"
+                  className="transition hover:text-white"
+                >
+                  info@webryxo.com
+                </a>
+
+                <a href="/book" className="transition hover:text-white">
+                  Start a Project
+                </a>
+
+                <span>Massachusetts</span>
+              </div>
+            </div>
+          </div>
+
+          <div className="mt-12 flex flex-col justify-between gap-4 border-t border-white/[0.07] pt-7 text-xs text-white/25 sm:flex-row">
+            <p>© {new Date().getFullYear()} Webryxo. All rights reserved.</p>
+            <p>Designed & developed by Webryxo.</p>
+          </div>
         </div>
       </footer>
     </main>
