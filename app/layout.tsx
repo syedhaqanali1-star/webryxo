@@ -12,22 +12,22 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+const siteUrl = "https://www.webryxo.com";
+const googleVerification = process.env.GOOGLE_SITE_VERIFICATION;
+
 export const metadata: Metadata = {
-  metadataBase: new URL("https://www.webryxo.com"),
+  metadataBase: new URL(siteUrl),
 
   title: {
-    default: "Webryxo — Modern Websites for Businesses",
+    default: "Webryxo | Web Design, SEO & Local SEO for Small Businesses",
     template: "%s | Webryxo",
   },
 
   description:
-    "Webryxo builds premium custom websites designed to help businesses stand out, attract customers, and grow online.",
+    "Webryxo builds modern business websites and provides SEO, local SEO, website redesign, performance optimization, and ongoing website support for growing businesses.",
 
   applicationName: "Webryxo",
-
-  alternates: {
-    canonical: "/",
-  },
+  category: "Web Design and SEO",
 
   icons: {
     icon: "/icon.png",
@@ -37,26 +37,26 @@ export const metadata: Metadata = {
 
   openGraph: {
     type: "website",
-    url: "https://www.webryxo.com",
+    url: siteUrl,
     siteName: "Webryxo",
-    title: "Webryxo — Modern Websites for Businesses",
+    title: "Webryxo | Web Design, SEO & Local SEO for Small Businesses",
     description:
-      "Premium custom websites designed to help businesses stand out, attract customers, and grow online.",
+      "Modern websites, SEO, local search optimization, website redesign, and digital growth services for businesses that want to look professional and get found online.",
     images: [
       {
         url: "/icon.png",
         width: 1024,
         height: 1024,
-        alt: "Webryxo",
+        alt: "Webryxo logo",
       },
     ],
   },
 
   twitter: {
     card: "summary_large_image",
-    title: "Webryxo — Modern Websites for Businesses",
+    title: "Webryxo | Web Design, SEO & Local SEO",
     description:
-      "Premium custom websites designed to help businesses stand out, attract customers, and grow online.",
+      "Modern websites and search visibility services for growing businesses.",
     images: ["/icon.png"],
   },
 
@@ -66,7 +66,39 @@ export const metadata: Metadata = {
     googleBot: {
       index: true,
       follow: true,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
     },
+  },
+
+  verification: googleVerification
+    ? {
+        google: googleVerification,
+      }
+    : undefined,
+};
+
+const organizationSchema = {
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "@id": `${siteUrl}/#organization`,
+  name: "Webryxo",
+  url: siteUrl,
+  logo: `${siteUrl}/icon.png`,
+  email: "info@webryxo.com",
+  description:
+    "Webryxo provides web design, web development, SEO, local SEO, website redesign, hosting, and website maintenance services.",
+};
+
+const websiteSchema = {
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "@id": `${siteUrl}/#website`,
+  url: siteUrl,
+  name: "Webryxo",
+  publisher: {
+    "@id": `${siteUrl}/#organization`,
   },
 };
 
@@ -80,7 +112,21 @@ export default function RootLayout({
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col">{children}</body>
+      <body className="min-h-full flex flex-col">
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(organizationSchema),
+          }}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(websiteSchema),
+          }}
+        />
+        {children}
+      </body>
     </html>
   );
 }

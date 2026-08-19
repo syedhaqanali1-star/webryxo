@@ -266,39 +266,45 @@ function HeroLaptop() {
 const services = [
   {
     icon: MonitorSmartphone,
-    title: "Business Websites",
+    title: "Web Design",
     description:
-      "Premium websites designed to make your business look established, trustworthy, and easy to contact.",
+      "Custom, mobile-friendly business websites designed to build trust and turn visitors into inquiries.",
+    href: "/web-design",
   },
   {
-    icon: Palette,
-    title: "Custom Web Design",
+    icon: Search,
+    title: "SEO & Search Visibility",
     description:
-      "Unique layouts, modern typography, polished visuals, and branding tailored to your business.",
+      "Technical SEO, on-page optimization, keyword strategy, service pages, and content planning built around real search intent.",
+    href: "/seo",
+  },
+  {
+    icon: MapPin,
+    title: "Local SEO",
+    description:
+      "Local search strategy that strengthens your website, service relevance, and online presence for nearby customers.",
+    href: "/local-seo",
+  },
+  {
+    icon: Sparkles,
+    title: "Website Redesign",
+    description:
+      "Modern redesigns for businesses with outdated, confusing, slow, or underperforming websites.",
+    href: "/website-redesign",
   },
   {
     icon: Code2,
     title: "Custom Development",
     description:
-      "Custom features and interactive experiences built around what your business actually needs.",
+      "Custom features, forms, booking flows, and interactive experiences built around what your business actually needs.",
+    href: "/web-design",
   },
   {
     icon: Gauge,
     title: "Speed & Performance",
     description:
-      "Fast-loading, responsive websites optimized for desktop, tablet, and mobile.",
-  },
-  {
-    icon: Search,
-    title: "SEO Foundations",
-    description:
-      "Clean page structure and technical foundations that help search engines understand your website.",
-  },
-  {
-    icon: Sparkles,
-    title: "Interactive Experiences",
-    description:
-      "Smooth motion, 3D elements, premium transitions, and effects that help your website stand out.",
+      "Fast-loading, responsive websites with a strong technical foundation for users and search engines.",
+    href: "/web-design",
   },
 ];
 
@@ -569,6 +575,7 @@ export default function Home() {
           <nav className="hidden items-center gap-8 text-sm text-white/55 md:flex">
             <a href="#work" className="transition hover:text-white">Work</a>
             <a href="#services" className="transition hover:text-white">Services</a>
+            <a href="/seo" className="transition hover:text-white">SEO</a>
             <a href="#process" className="transition hover:text-white">Process</a>
             <a href="#pricing" className="transition hover:text-white">Pricing</a>
             <a href="#about" className="transition hover:text-white">About</a>
@@ -597,6 +604,9 @@ export default function Home() {
             <div className="flex flex-col gap-4 text-sm text-white/65">
               <a href="#work" onClick={() => setMenuOpen(false)}>Work</a>
               <a href="#services" onClick={() => setMenuOpen(false)}>Services</a>
+              <a href="/seo" onClick={() => setMenuOpen(false)}>SEO</a>
+              <a href="/local-seo" onClick={() => setMenuOpen(false)}>Local SEO</a>
+              <a href="/blog" onClick={() => setMenuOpen(false)}>Blog</a>
               <a href="#process" onClick={() => setMenuOpen(false)}>Process</a>
               <a href="#pricing" onClick={() => setMenuOpen(false)}>Pricing</a>
               <a href="#about" onClick={() => setMenuOpen(false)}>About</a>
@@ -626,7 +636,7 @@ export default function Home() {
         >
           <div className="mb-7 flex items-center gap-3 text-[11px] font-medium uppercase tracking-[0.28em] text-white/45">
             <span className="h-px w-9 bg-violet-400/70" />
-            Web Design & Digital Experiences
+            Web Design • SEO • Digital Growth
           </div>
 
           <h1 className="max-w-[860px] text-[clamp(3.6rem,8vw,7.6rem)] font-semibold leading-[0.88] tracking-[-0.065em]">
@@ -638,9 +648,9 @@ export default function Home() {
           </h1>
 
           <p className="mt-8 max-w-xl text-lg leading-8 text-white/48 md:text-xl">
-            Webryxo designs and develops fast, modern digital experiences
-            that help businesses stand out, build trust, and turn visitors
-            into customers.
+            Webryxo builds fast, modern websites and search strategies that help
+            businesses look professional, get found online, build trust, and
+            turn more visitors into customers.
           </p>
 
           <div className="mt-9 flex flex-wrap gap-4">
@@ -865,9 +875,9 @@ export default function Home() {
             </h2>
 
             <p className="mt-7 max-w-xl text-lg leading-8 text-white/45">
-              Webryxo combines strategy, design, development, motion, and
-              performance to create digital experiences that feel polished
-              and help businesses make a stronger first impression.
+              Webryxo combines web design, development, SEO, local search strategy,
+              performance, and user experience to help businesses look better
+              online and become easier to discover.
             </p>
 
             <a
@@ -884,8 +894,9 @@ export default function Home() {
               const Icon = service.icon;
 
               return (
-                <motion.div
+                <motion.a
                   key={service.title}
+                  href={service.href}
                   initial={{ opacity: 0, y: 28 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true, amount: 0.2 }}
@@ -922,7 +933,7 @@ export default function Home() {
                       <ArrowRight size={15} />
                     </div>
                   </div>
-                </motion.div>
+                </motion.a>
               );
             })}
           </div>
@@ -1915,6 +1926,9 @@ export default function Home() {
               <div className="mt-5 flex flex-col gap-3 text-sm text-white/45">
                 <a href="#work" className="transition hover:text-white">Work</a>
                 <a href="#services" className="transition hover:text-white">Services</a>
+                <a href="/seo" className="transition hover:text-white">SEO</a>
+                <a href="/local-seo" className="transition hover:text-white">Local SEO</a>
+                <a href="/blog" className="transition hover:text-white">Blog</a>
                 <a href="#process" className="transition hover:text-white">Process</a>
                 <a href="#pricing" className="transition hover:text-white">Pricing</a>
                 <a href="#faq" className="transition hover:text-white">FAQ</a>
