@@ -31,6 +31,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.9,
     },
     {
+      url: `${baseUrl}/massachusetts-web-design`,
+      lastModified: now,
+      changeFrequency: "monthly",
+      priority: 0.9,
+    },
+    {
       url: `${baseUrl}/website-redesign`,
       lastModified: now,
       changeFrequency: "monthly",
