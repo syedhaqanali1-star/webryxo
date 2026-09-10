@@ -1425,57 +1425,6 @@ export default function Home() {
     };
   }, [mouseX, mouseY]);
 
-  useEffect(() => {
-    if (prefersReducedMotion) return;
-
-    const stages = Array.from(
-      document.querySelectorAll<HTMLElement>("[data-scroll-world] > section")
-    );
-    let frame = 0;
-
-    const updateStages = () => {
-      frame = 0;
-      const viewportHeight = window.innerHeight;
-
-      stages.forEach((stage) => {
-        const bounds = stage.getBoundingClientRect();
-        const stageCenter = bounds.top + bounds.height / 2;
-        const range = viewportHeight / 2 + bounds.height / 2;
-        const distance = Math.max(
-          -1,
-          Math.min(1, (stageCenter - viewportHeight / 2) / range)
-        );
-        const depth = 1 - Math.abs(distance);
-
-        stage.classList.add("scroll-stage");
-        stage.style.setProperty("--scroll-stage-depth", depth.toFixed(3));
-        stage.style.setProperty(
-          "--scroll-stage-tilt",
-          `${(distance * -4.5).toFixed(2)}deg`
-        );
-      });
-    };
-
-    const requestUpdate = () => {
-      if (!frame) frame = window.requestAnimationFrame(updateStages);
-    };
-
-    updateStages();
-    window.addEventListener("scroll", requestUpdate, { passive: true });
-    window.addEventListener("resize", requestUpdate);
-
-    return () => {
-      window.removeEventListener("scroll", requestUpdate);
-      window.removeEventListener("resize", requestUpdate);
-      if (frame) window.cancelAnimationFrame(frame);
-      stages.forEach((stage) => {
-        stage.classList.remove("scroll-stage");
-        stage.style.removeProperty("--scroll-stage-depth");
-        stage.style.removeProperty("--scroll-stage-tilt");
-      });
-    };
-  }, [prefersReducedMotion]);
-
   async function handleSubmit(
     event: React.FormEvent<HTMLFormElement>
   ) {
