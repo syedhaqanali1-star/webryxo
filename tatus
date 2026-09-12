@@ -1,0 +1,17 @@
+[35mapp/book/page.tsx[m[36m:[m[32m17[m[36m:[m    price: "[1;31m$99[m",
+[35mapp/book/page.tsx[m[36m:[m[32m23[m[36m:[m    price: "[1;31m$299[m",
+[35mapp/book/page.tsx[m[36m:[m[32m30[m[36m:[m    price: "[1;31m$499[m",
+[35mapp/hostingpayment/page.tsx[m[36m:[m[32m20[m[36m:[m    price: "[1;31m$10[m",
+[35mapp/hostingpayment/page.tsx[m[36m:[m[32m36[m[36m:[m    price: "[1;31m$100[m",
+Binary file [35mapp/icon.png[m matches
+[35mapp/page.tsx[m[36m:[m[32m1264[m[36m:[m    price: "[1;31m$99[m",
+[35mapp/page.tsx[m[36m:[m[32m1279[m[36m:[m    price: "[1;31m$299[m",
+[35mapp/page.tsx[m[36m:[m[32m1294[m[36m:[m    price: "[1;31m$499[m",
+[35mapp/page.tsx[m[36m:[m[32m1319[m[36m:[m  { question: "How much is hosting and maintenance?", answer: "Hosting and maintenance are [1;31m$10[m per month or [1;31m$100[m per year." },
+[35mapp/page.tsx[m[36m:[m[32m2240[m[36m:[m                [1;31m$10[m
+[35mapp/page.tsx[m[36m:[m[32m2247[m[36m:[m                [1;31m$100[m
+[35mapp/planpayment/page.tsx[m[36m:[m[32m18[m[36m:[m    price: "[1;31m$99[m",
+[35mapp/planpayment/page.tsx[m[36m:[m[32m32[m[36m:[m    price: "[1;31m$299[m",
+[35mapp/planpayment/page.tsx[m[36m:[m[32m47[m[36m:[m    price: "[1;31m$499[m",
+[35mapp/services/page.tsx[m[36m:[m[32m100[m[36m:[m      "[1;31m$10[m monthly or [1;31m$100[m yearly",
+Binary file [35mpublic/icon.png[m matches
