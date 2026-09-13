@@ -1,8 +1,8 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import Image from "next/image";
-import { motion, useMotionValue, useSpring } from "framer-motion";
+import { motion, useMotionValue, useReducedMotion, useSpring } from "framer-motion";
 import {
   ArrowRight,
   BadgeCheck,
@@ -29,209 +29,1077 @@ import {
   Send,
   Smartphone,
   Sparkles,
+  UsersRound,
   Wrench,
   X,
   Zap,
 } from "lucide-react";
 
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
-import { Float, OrbitControls } from "@react-three/drei";
+import { ContactShadows, Float, OrbitControls, RoundedBox } from "@react-three/drei";
 import * as THREE from "three";
 
 /* -------------------------------------------------------------------------- */
-/*                                  3D LAPTOP                                 */
+/*                       PHOTOREALISTIC 3D LAPTOP (MACBOOK PRO STYLE)         */
 /* -------------------------------------------------------------------------- */
+
+/**
+ * Generates a high-DPI 2048x1280 Retina canvas texture featuring a stunning,
+ * modern Webryxo agency site with glowing gradients, clean UI cards, and macOS browser chrome.
+ */
+function useScreenTexture() {
+  return useMemo(() => {
+    if (typeof document === "undefined") return null;
+
+    const canvas = document.createElement("canvas");
+
+    // High-resolution 16:9 display texture
+    canvas.width = 2560;
+    canvas.height = 1440;
+
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return null;
+
+    const W = canvas.width;
+    const H = canvas.height;
+
+    // ---------------------------------------------------------
+    // Helpers
+    // ---------------------------------------------------------
+
+    const roundRect = (
+      x: number,
+      y: number,
+      width: number,
+      height: number,
+      radius: number
+    ) => {
+      ctx.beginPath();
+      ctx.roundRect(x, y, width, height, radius);
+    };
+
+    const drawGlow = (
+      x: number,
+      y: number,
+      radius: number,
+      color: string
+    ) => {
+      const gradient = ctx.createRadialGradient(
+        x,
+        y,
+        0,
+        x,
+        y,
+        radius
+      );
+
+      gradient.addColorStop(0, color);
+      gradient.addColorStop(1, "rgba(0,0,0,0)");
+
+      ctx.fillStyle = gradient;
+      ctx.beginPath();
+      ctx.arc(x, y, radius, 0, Math.PI * 2);
+      ctx.fill();
+    };
+
+    const drawDot = (
+      x: number,
+      y: number,
+      radius: number,
+      color: string
+    ) => {
+      ctx.fillStyle = color;
+      ctx.beginPath();
+      ctx.arc(x, y, radius, 0, Math.PI * 2);
+      ctx.fill();
+    };
+
+    const drawPill = (
+      x: number,
+      y: number,
+      width: number,
+      text: string,
+      textColor: string
+    ) => {
+      ctx.fillStyle = "rgba(255,255,255,0.055)";
+      roundRect(x, y, width, 48, 24);
+      ctx.fill();
+
+      ctx.strokeStyle = "rgba(255,255,255,0.09)";
+      ctx.lineWidth = 1.5;
+      ctx.stroke();
+
+      ctx.fillStyle = textColor;
+      ctx.font =
+        "600 17px -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif";
+
+      ctx.fillText(text, x + 20, y + 31);
+    };
+
+    // ---------------------------------------------------------
+    // Background
+    // ---------------------------------------------------------
+
+    const background = ctx.createLinearGradient(0, 0, W, H);
+
+    background.addColorStop(0, "#05040a");
+    background.addColorStop(0.45, "#0b0716");
+    background.addColorStop(1, "#030207");
+
+    ctx.fillStyle = background;
+    ctx.fillRect(0, 0, W, H);
+
+    drawGlow(560, 430, 650, "rgba(124,58,237,0.34)");
+    drawGlow(1960, 360, 620, "rgba(217,70,239,0.20)");
+    drawGlow(1930, 1170, 680, "rgba(59,130,246,0.16)");
+    drawGlow(390, 1180, 520, "rgba(139,92,246,0.14)");
+
+    // ---------------------------------------------------------
+    // Browser chrome
+    // ---------------------------------------------------------
+
+    const chromeHeight = 88;
+
+    ctx.fillStyle = "rgba(10,9,16,0.96)";
+    ctx.fillRect(0, 0, W, chromeHeight);
+
+    ctx.fillStyle = "rgba(255,255,255,0.07)";
+    ctx.fillRect(0, chromeHeight - 2, W, 2);
+
+    drawDot(40, 44, 10, "#ff5f56");
+    drawDot(70, 44, 10, "#ffbd2e");
+    drawDot(100, 44, 10, "#27c93f");
+
+    // URL bar
+    ctx.fillStyle = "rgba(255,255,255,0.055)";
+    roundRect(860, 21, 840, 46, 23);
+    ctx.fill();
+
+    ctx.strokeStyle = "rgba(255,255,255,0.09)";
+    ctx.lineWidth = 1.5;
+    ctx.stroke();
+
+    ctx.fillStyle = "rgba(255,255,255,0.68)";
+    ctx.font =
+      "500 17px -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif";
+
+    ctx.fillText("🔒  webryxo.com", 1100, 51);
+
+    ctx.fillStyle = "rgba(255,255,255,0.35)";
+    ctx.font =
+      "500 16px -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif";
+
+    ctx.fillText("‹", 1930, 52);
+    ctx.fillText("›", 1970, 52);
+    ctx.fillText("↻", 2010, 52);
+
+    // ---------------------------------------------------------
+    // Main content
+    // ---------------------------------------------------------
+
+    const left = 150;
+    const top = 175;
+
+    ctx.fillStyle = "#b79cff";
+    ctx.font =
+      "600 16px -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif";
+
+    ctx.fillText(
+      "WEB DESIGN  ·  SEO  ·  DIGITAL GROWTH",
+      left,
+      top
+    );
+
+    ctx.fillStyle = "#8b5cf6";
+    ctx.fillRect(left, top + 24, 70, 3);
+
+    // ---------------------------------------------------------
+    // Main heading
+    // ---------------------------------------------------------
+
+    ctx.font =
+      "700 88px -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif";
+
+    ctx.fillStyle = "#ffffff";
+    ctx.fillText("We build", left, top + 125);
+
+    ctx.fillStyle = "rgba(255,255,255,0.38)";
+    ctx.fillText("websites", left, top + 215);
+
+    const headingGradient = ctx.createLinearGradient(
+      left,
+      top + 230,
+      left + 700,
+      top + 310
+    );
+
+    headingGradient.addColorStop(0, "#ffffff");
+    headingGradient.addColorStop(0.55, "#c4b5fd");
+    headingGradient.addColorStop(1, "#e879f9");
+
+    ctx.fillStyle = headingGradient;
+    ctx.fillText("people", left, top + 305);
+    ctx.fillText("remember.", left, top + 395);
+
+    // ---------------------------------------------------------
+    // Description
+    // ---------------------------------------------------------
+
+    ctx.fillStyle = "rgba(255,255,255,0.56)";
+    ctx.font =
+      "400 22px -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif";
+
+    ctx.fillText(
+      "Fast, modern websites and search strategies",
+      left,
+      top + 465
+    );
+
+    ctx.fillText(
+      "built to help businesses grow online.",
+      left,
+      top + 500
+    );
+
+    // ---------------------------------------------------------
+    // CTA
+    // ---------------------------------------------------------
+
+    ctx.fillStyle = "#ffffff";
+    roundRect(left, top + 550, 215, 64, 32);
+    ctx.fill();
+
+    ctx.fillStyle = "#08070b";
+    ctx.font =
+      "600 19px -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif";
+
+    ctx.fillText("Start a Project", left + 34, top + 591);
+
+    ctx.fillStyle = "rgba(255,255,255,0.045)";
+    roundRect(left + 240, top + 550, 205, 64, 32);
+    ctx.fill();
+
+    ctx.strokeStyle = "rgba(255,255,255,0.16)";
+    ctx.lineWidth = 1.5;
+    ctx.stroke();
+
+    ctx.fillStyle = "#ffffff";
+    ctx.fillText("Explore Work", left + 278, top + 591);
+
+    // ---------------------------------------------------------
+    // Right-side website preview
+    // ---------------------------------------------------------
+
+    const cardX = 1330;
+    const cardY = 190;
+    const cardW = 950;
+    const cardH = 720;
+
+    ctx.fillStyle = "rgba(255,255,255,0.035)";
+    roundRect(cardX, cardY, cardW, cardH, 38);
+    ctx.fill();
+
+    ctx.strokeStyle = "rgba(255,255,255,0.10)";
+    ctx.lineWidth = 2;
+    ctx.stroke();
+
+    // Mini browser bar
+    ctx.fillStyle = "rgba(0,0,0,0.28)";
+    roundRect(cardX + 28, cardY + 28, cardW - 56, 60, 20);
+    ctx.fill();
+
+    drawDot(cardX + 56, cardY + 58, 7, "#ff5f56");
+    drawDot(cardX + 82, cardY + 58, 7, "#ffbd2e");
+    drawDot(cardX + 108, cardY + 58, 7, "#27c93f");
+
+    ctx.fillStyle = "rgba(255,255,255,0.38)";
+    ctx.font =
+      "500 16px -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif";
+
+    ctx.fillText(
+      "webryxo.com",
+      cardX + 145,
+      cardY + 64
+    );
+
+    // Preview
+    const previewX = cardX + 38;
+    const previewY = cardY + 120;
+    const previewW = cardW - 76;
+    const previewH = 350;
+
+    const previewGradient = ctx.createLinearGradient(
+      previewX,
+      previewY,
+      previewX + previewW,
+      previewY + previewH
+    );
+
+    previewGradient.addColorStop(
+      0,
+      "rgba(91,33,182,0.48)"
+    );
+
+    previewGradient.addColorStop(
+      1,
+      "rgba(24,12,45,0.9)"
+    );
+
+    ctx.fillStyle = previewGradient;
+
+    roundRect(
+      previewX,
+      previewY,
+      previewW,
+      previewH,
+      28
+    );
+
+    ctx.fill();
+
+    ctx.fillStyle = "#ffffff";
+    ctx.font =
+      "700 40px -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif";
+
+    ctx.fillText(
+      "A better website",
+      previewX + 42,
+      previewY + 88
+    );
+
+    ctx.fillStyle = "rgba(255,255,255,0.52)";
+    ctx.font =
+      "400 19px -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif";
+
+    ctx.fillText(
+      "Designed around your business.",
+      previewX + 42,
+      previewY + 126
+    );
+
+    ctx.fillStyle = "#ffffff";
+
+    roundRect(
+      previewX + 42,
+      previewY + 160,
+      155,
+      48,
+      24
+    );
+
+    ctx.fill();
+
+    ctx.fillStyle = "#08070b";
+    ctx.font =
+      "600 15px -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif";
+
+    ctx.fillText(
+      "View Project",
+      previewX + 77,
+      previewY + 191
+    );
+
+    // Dashboard
+    ctx.fillStyle = "rgba(5,4,10,0.58)";
+
+    roundRect(
+      previewX + 480,
+      previewY + 48,
+      325,
+      250,
+      24
+    );
+
+    ctx.fill();
+
+    ctx.strokeStyle = "rgba(255,255,255,0.08)";
+    ctx.lineWidth = 1.5;
+    ctx.stroke();
+
+    ctx.fillStyle = "rgba(255,255,255,0.62)";
+    ctx.font =
+      "600 16px -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif";
+
+    ctx.fillText(
+      "Organic Growth",
+      previewX + 515,
+      previewY + 88
+    );
+
+    ctx.strokeStyle = "#a855f7";
+    ctx.lineWidth = 4;
+
+    ctx.beginPath();
+
+    ctx.moveTo(
+      previewX + 515,
+      previewY + 245
+    );
+
+    ctx.bezierCurveTo(
+      previewX + 570,
+      previewY + 225,
+      previewX + 610,
+      previewY + 238,
+      previewX + 665,
+      previewY + 200
+    );
+
+    ctx.bezierCurveTo(
+      previewX + 715,
+      previewY + 165,
+      previewX + 755,
+      previewY + 185,
+      previewX + 790,
+      previewY + 125
+    );
+
+    ctx.stroke();
+
+    // ---------------------------------------------------------
+    // Feature pills
+    // ---------------------------------------------------------
+
+    drawPill(
+      cardX + 42,
+      cardY + 505,
+      230,
+      "⚡ Fast Performance",
+      "#a78bfa"
+    );
+
+    drawPill(
+      cardX + 292,
+      cardY + 505,
+      210,
+      "⌁ SEO Ready",
+      "#c4b5fd"
+    );
+
+    drawPill(
+      cardX + 522,
+      cardY + 505,
+      250,
+      "✦ Custom Design",
+      "#e879f9"
+    );
+
+    // ---------------------------------------------------------
+    // Bottom labels
+    // ---------------------------------------------------------
+
+    const metricY = cardY + 590;
+
+    ctx.fillStyle = "rgba(255,255,255,0.045)";
+
+    roundRect(
+      cardX + 42,
+      metricY,
+      255,
+      80,
+      20
+    );
+
+    ctx.fill();
+
+    roundRect(
+      cardX + 322,
+      metricY,
+      255,
+      80,
+      20
+    );
+
+    ctx.fill();
+
+    roundRect(
+      cardX + 602,
+      metricY,
+      235,
+      80,
+      20
+    );
+
+    ctx.fill();
+
+    ctx.fillStyle = "rgba(255,255,255,0.38)";
+    ctx.font =
+      "500 13px -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif";
+
+    ctx.fillText(
+      "DESIGN",
+      cardX + 66,
+      metricY + 29
+    );
+
+    ctx.fillText(
+      "SEO",
+      cardX + 346,
+      metricY + 29
+    );
+
+    ctx.fillText(
+      "GROWTH",
+      cardX + 626,
+      metricY + 29
+    );
+
+    ctx.fillStyle = "#ffffff";
+    ctx.font =
+      "600 17px -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif";
+
+    ctx.fillText(
+      "Built to convert",
+      cardX + 66,
+      metricY + 57
+    );
+
+    ctx.fillText(
+      "Built to be found",
+      cardX + 346,
+      metricY + 57
+    );
+
+    ctx.fillText(
+      "Built to grow",
+      cardX + 626,
+      metricY + 57
+    );
+
+    // ---------------------------------------------------------
+    // Bottom floating labels
+    // ---------------------------------------------------------
+
+    ctx.fillStyle = "rgba(12,10,20,0.88)";
+
+    roundRect(
+      150,
+      1175,
+      330,
+      72,
+      25
+    );
+
+    ctx.fill();
+
+    ctx.strokeStyle = "rgba(167,139,250,0.20)";
+    ctx.lineWidth = 1.5;
+    ctx.stroke();
+
+    ctx.fillStyle = "#c4b5fd";
+    ctx.font =
+      "600 16px -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif";
+
+    ctx.fillText(
+      "Custom websites",
+      182,
+      1207
+    );
+
+    ctx.fillStyle = "rgba(255,255,255,0.42)";
+    ctx.font =
+      "400 13px -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif";
+
+    ctx.fillText(
+      "Designed around your business",
+      182,
+      1232
+    );
+
+    // Right label
+    ctx.fillStyle = "rgba(12,10,20,0.88)";
+
+    roundRect(
+      1900,
+      1155,
+      440,
+      72,
+      25
+    );
+
+    ctx.fill();
+
+    ctx.strokeStyle = "rgba(217,70,239,0.20)";
+    ctx.stroke();
+
+    ctx.fillStyle = "#e9d5ff";
+    ctx.font =
+      "600 16px -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif";
+
+    ctx.fillText(
+      "Premium digital experience",
+      1935,
+      1187
+    );
+
+    ctx.fillStyle = "rgba(255,255,255,0.42)";
+    ctx.font =
+      "400 13px -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif";
+
+    ctx.fillText(
+      "Modern · Fast · Memorable",
+      1935,
+      1212
+    );
+
+    // ---------------------------------------------------------
+    // THREE texture
+    // ---------------------------------------------------------
+
+    const texture = new THREE.CanvasTexture(canvas);
+
+    texture.colorSpace = THREE.SRGBColorSpace;
+
+    // Keep texture crisp
+    texture.generateMipmaps = false;
+    texture.minFilter = THREE.LinearFilter;
+    texture.magFilter = THREE.LinearFilter;
+
+    texture.anisotropy = 16;
+
+    texture.wrapS = THREE.ClampToEdgeWrapping;
+    texture.wrapT = THREE.ClampToEdgeWrapping;
+
+    texture.needsUpdate = true;
+
+    return texture;
+  }, []);
+}
+
+/**
+ * Generates an ultra-detailed, crisp MacBook Magic Keyboard texture with
+ * precision key legends, functional labels, backlit underglow, and glass trackpad outline.
+ */
+function useKeyboardTexture() {
+  return useMemo(() => {
+    if (typeof document === "undefined") return null;
+
+    const canvas = document.createElement("canvas");
+    canvas.width = 1024;
+    canvas.height = 512;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return null;
+
+    const W = canvas.width;
+    const H = canvas.height;
+
+    // Aluminum keyboard well background
+    ctx.fillStyle = "#0d0d11";
+    ctx.fillRect(0, 0, W, H);
+
+    // Keyboard well subtle chamfer border
+    ctx.strokeStyle = "rgba(255, 255, 255, 0.06)";
+    ctx.lineWidth = 2;
+    ctx.strokeRect(10, 10, W - 20, H - 20);
+
+    // Draw individual keycap with backlit underglow & crisp font
+    const drawKey = (
+      x: number,
+      y: number,
+      w: number,
+      h: number,
+      label: string,
+      isWide = false
+    ) => {
+      // Soft backlit underglow
+      ctx.fillStyle = "rgba(167, 139, 250, 0.14)";
+      ctx.beginPath();
+      ctx.roundRect(x - 2, y - 2, w + 4, h + 4, 8);
+      ctx.fill();
+
+      // Keycap surface
+      const keyGrad = ctx.createLinearGradient(x, y, x, y + h);
+      keyGrad.addColorStop(0, "#1f1f24");
+      keyGrad.addColorStop(1, "#141418");
+      ctx.fillStyle = keyGrad;
+      ctx.beginPath();
+      ctx.roundRect(x, y, w, h, 6);
+      ctx.fill();
+
+      // Top bevel highlight
+      ctx.strokeStyle = "rgba(255, 255, 255, 0.12)";
+      ctx.lineWidth = 1;
+      ctx.stroke();
+
+      // Legend
+      ctx.fillStyle = "rgba(255, 255, 255, 0.85)";
+      ctx.font = isWide
+        ? "500 13px -apple-system, BlinkMacSystemFont, sans-serif"
+        : "600 15px -apple-system, BlinkMacSystemFont, sans-serif";
+      ctx.textAlign = "center";
+      ctx.textBaseline = "middle";
+      ctx.fillText(label, x + w / 2, y + h / 2);
+    };
+
+    // Row 0: Function Row (Esc, F1-F12, TouchID)
+    const fnLabels = ["esc", "F1", "F2", "F3", "F4", "F5", "F6", "F7", "F8", "F9", "F10", "F11", "F12", "⏻"];
+    const fnWidth = (W - 56 - (fnLabels.length - 1) * 6) / fnLabels.length;
+    fnLabels.forEach((lbl, i) => {
+      const kx = 28 + i * (fnWidth + 6);
+      drawKey(kx, 22, fnWidth, 36, lbl, true);
+    });
+
+    // Row 1: Number Row
+    const row1 = ["~", "1", "2", "3", "4", "5", "6", "7", "8", "9", "0", "-", "=", "delete"];
+    const r1Width = (W - 56 - 13 * 6 - 36) / 13;
+    let currX = 28;
+    row1.forEach((lbl) => {
+      const kw = lbl === "delete" ? r1Width + 36 : r1Width;
+      drawKey(currX, 68, kw, 60, lbl, lbl === "delete");
+      currX += kw + 6;
+    });
+
+    // Row 2: QWERTY
+    const row2 = ["tab", "Q", "W", "E", "R", "T", "Y", "U", "I", "O", "P", "[", "]", "\\"];
+    currX = 28;
+    row2.forEach((lbl) => {
+      const kw = lbl === "tab" || lbl === "\\" ? r1Width + 18 : r1Width;
+      drawKey(currX, 136, kw, 60, lbl, lbl === "tab");
+      currX += kw + 6;
+    });
+
+    // Row 3: ASDF
+    const row3 = ["caps lock", "A", "S", "D", "F", "G", "H", "J", "K", "L", ";", "'", "return"];
+    currX = 28;
+    row3.forEach((lbl) => {
+      const kw = lbl === "caps lock" || lbl === "return" ? r1Width + 28 : r1Width;
+      drawKey(currX, 204, kw, 60, lbl, lbl === "caps lock" || lbl === "return");
+      currX += kw + 6;
+    });
+
+    // Row 4: ZXCV
+    const row4 = ["shift", "Z", "X", "C", "V", "B", "N", "M", ",", ".", "/", "shift"];
+    currX = 28;
+    row4.forEach((lbl, i) => {
+      const kw = lbl === "shift" ? (i === 0 ? r1Width + 48 : r1Width + 56) : r1Width;
+      drawKey(currX, 272, kw, 60, lbl, lbl === "shift");
+      currX += kw + 6;
+    });
+
+    // Row 5: Modifiers & Spacebar
+    const bY = 340;
+    const bH = 68;
+    drawKey(28, bY, 70, bH, "fn", true);
+    drawKey(104, bY, 70, bH, "control", true);
+    drawKey(180, bY, 78, bH, "option", true);
+    drawKey(264, bY, 96, bH, "command", true);
+
+    // Spacebar
+    drawKey(366, bY, 320, bH, "");
+
+    drawKey(692, bY, 96, bH, "command", true);
+    drawKey(794, bY, 78, bH, "option", true);
+
+    // Arrow keys
+    drawKey(878, bY + 34, 44, 34, "◀", true);
+    drawKey(926, bY, 44, 32, "▲", true);
+    drawKey(926, bY + 34, 44, 34, "▼", true);
+    drawKey(974, bY + 34, 44, 34, "▶", true);
+
+    const texture = new THREE.CanvasTexture(canvas);
+    texture.colorSpace = THREE.SRGBColorSpace;
+    texture.needsUpdate = true;
+    return texture;
+  }, []);
+}
 
 function LaptopModel() {
   const group = useRef<THREE.Group>(null);
   const screenGlow = useRef<THREE.MeshStandardMaterial>(null);
   const { pointer } = useThree();
 
+  const screenMap = useScreenTexture();
+  const keyboardMap = useKeyboardTexture();
+
   useFrame((state, delta) => {
     if (!group.current) return;
     const t = state.clock.elapsedTime;
 
+    // Smooth responsive tilt with dampening
     group.current.rotation.y = THREE.MathUtils.damp(
       group.current.rotation.y,
-      -0.38 + pointer.x * 0.24 + Math.sin(t * 0.32) * 0.018,
-      4.2,
+      -0.34 + pointer.x * 0.28 + Math.sin(t * 0.4) * 0.02,
+      4.0,
       delta
     );
     group.current.rotation.x = THREE.MathUtils.damp(
       group.current.rotation.x,
-      -0.10 - pointer.y * 0.13,
-      4.2,
+      -0.08 - pointer.y * 0.14,
+      4.0,
       delta
     );
     group.current.position.x = THREE.MathUtils.damp(
       group.current.position.x,
-      pointer.x * 0.1,
-      3.2,
+      pointer.x * 0.12,
+      3.0,
       delta
     );
     group.current.position.y = THREE.MathUtils.damp(
       group.current.position.y,
-      Math.sin(t * 1.05) * 0.055 + pointer.y * 0.045,
-      3.2,
+      Math.sin(t * 1.1) * 0.05 + pointer.y * 0.05,
+      3.0,
       delta
     );
 
     if (screenGlow.current) {
-      screenGlow.current.emissiveIntensity = 0.62 + Math.sin(t * 1.45) * 0.08;
+      screenGlow.current.emissiveIntensity = 0.42 + Math.sin(t * 1.6) * 0.06;
     }
   });
 
-  const keys = [];
-  for (let row = 0; row < 5; row++) {
-    const count = row === 4 ? 8 : 12;
-    const startX = -1.08 + (row === 4 ? 0.34 : 0);
-    for (let i = 0; i < count; i++) {
-      keys.push(
-        <mesh
-          key={`${row}-${i}`}
-          position={[startX + i * 0.195, -0.505, -0.46 + row * 0.19]}
-        >
-          <boxGeometry args={[0.145, 0.026, 0.115]} />
-          <meshStandardMaterial color="#242428" metalness={0.28} roughness={0.48} />
-        </mesh>
-      );
-    }
-  }
-
   return (
-    <group ref={group}>
-      {/* lower aluminum body */}
-      <mesh position={[0, -0.65, 0.13]}>
-        <boxGeometry args={[3.15, 0.13, 1.95]} />
-        <meshStandardMaterial color="#1b1b1f" metalness={0.88} roughness={0.18} />
+    <group ref={group} position={[0, -0.15, 0]} scale={0.72}>
+      {/* ══════════════════════════════════════════════════════════════
+          1. LOWER UNIBODY CHASSIS (CNC Precision Milled Space Black Aluminum)
+          ══════════════════════════════════════════════════════════════ */}
+
+      {/* Main Base Body */}
+      <RoundedBox
+        args={[3.42, 0.075, 2.28]}
+        radius={0.032}
+        smoothness={5}
+        position={[0, -0.62, 0.12]}
+      >
+        <meshStandardMaterial
+          color="#1c1c22"
+          metalness={0.94}
+          roughness={0.16}
+          envMapIntensity={1.2}
+        />
+      </RoundedBox>
+
+      {/* Front edge chamfer highlight */}
+      <mesh position={[0, -0.582, 1.25]} rotation={[0.1, 0, 0]}>
+        <boxGeometry args={[3.38, 0.003, 0.04]} />
+        <meshStandardMaterial color="#4a4a58" metalness={1.0} roughness={0.05} />
       </mesh>
 
-      {/* tapered front lip */}
-      <mesh position={[0, -0.705, 1.08]} rotation={[0.08, 0, 0]}>
-        <boxGeometry args={[2.75, 0.055, 0.16]} />
-        <meshStandardMaterial color="#25252a" metalness={0.9} roughness={0.18} />
+      {/* Front Display Notch Cutout (Thumb groove to open lid) */}
+      <RoundedBox
+        args={[0.42, 0.016, 0.03]}
+        radius={0.008}
+        smoothness={3}
+        position={[0, -0.585, 1.258]}
+      >
+        <meshStandardMaterial color="#101014" metalness={0.5} roughness={0.5} />
+      </RoundedBox>
+
+      {/* ── Side Ports ── */}
+      {/* Left Ports: MagSafe + 2x Thunderbolt 4 USB-C + 3.5mm Headphone Jack */}
+      <group position={[-1.712, -0.62, 0.12]}>
+        {/* MagSafe */}
+        <mesh position={[0, 0, -0.52]} rotation={[0, Math.PI / 2, 0]}>
+          <capsuleGeometry args={[0.014, 0.04, 8, 8]} />
+          <meshBasicMaterial color="#08080a" />
+        </mesh>
+        {/* USB-C #1 */}
+        <mesh position={[0, 0, -0.32]} rotation={[0, Math.PI / 2, 0]}>
+          <capsuleGeometry args={[0.009, 0.032, 8, 8]} />
+          <meshBasicMaterial color="#08080a" />
+        </mesh>
+        {/* USB-C #2 */}
+        <mesh position={[0, 0, -0.16]} rotation={[0, Math.PI / 2, 0]}>
+          <capsuleGeometry args={[0.009, 0.032, 8, 8]} />
+          <meshBasicMaterial color="#08080a" />
+        </mesh>
+        {/* Audio Jack */}
+        <mesh position={[0, 0, 0.04]} rotation={[0, Math.PI / 2, 0]}>
+          <circleGeometry args={[0.012, 16]} />
+          <meshBasicMaterial color="#08080a" />
+        </mesh>
+      </group>
+
+      {/* Right Ports: HDMI + USB-C + SD Card Slot */}
+      <group position={[1.712, -0.62, 0.12]}>
+        {/* HDMI */}
+        <mesh position={[0, 0, -0.42]} rotation={[0, -Math.PI / 2, 0]}>
+          <planeGeometry args={[0.038, 0.018]} />
+          <meshBasicMaterial color="#08080a" />
+        </mesh>
+        {/* USB-C */}
+        <mesh position={[0, 0, -0.24]} rotation={[0, -Math.PI / 2, 0]}>
+          <capsuleGeometry args={[0.009, 0.032, 8, 8]} />
+          <meshBasicMaterial color="#08080a" />
+        </mesh>
+        {/* SD Card Slot */}
+        <mesh position={[0, 0, -0.06]} rotation={[0, -Math.PI / 2, 0]}>
+          <planeGeometry args={[0.065, 0.008]} />
+          <meshBasicMaterial color="#08080a" />
+        </mesh>
+      </group>
+
+      {/* ── Recessed Keyboard Deck with Backlit Magic Keyboard ── */}
+      <RoundedBox
+        args={[2.72, 0.006, 1.28]}
+        radius={0.018}
+        smoothness={3}
+        position={[0, -0.581, -0.18]}
+      >
+        <meshStandardMaterial color="#0b0b0e" metalness={0.6} roughness={0.4} />
+      </RoundedBox>
+
+      {/* High-res Keyboard Face Plane with Backlit Underglow */}
+      <mesh position={[0, -0.577, -0.18]} rotation={[-Math.PI / 2, 0, 0]}>
+        <planeGeometry args={[2.68, 1.24]} />
+        <meshStandardMaterial
+          map={keyboardMap ?? undefined}
+          color="#ffffff"
+          roughness={0.35}
+          metalness={0.3}
+          emissive="#8b5cf6"
+          emissiveIntensity={0.18}
+        />
       </mesh>
 
-      {/* keyboard deck */}
-      <mesh position={[0, -0.57, 0.02]}>
-        <boxGeometry args={[2.88, 0.035, 1.68]} />
-        <meshStandardMaterial color="#111114" metalness={0.38} roughness={0.5} />
+      {/* Precision Micro-Drilled Left Speaker Grille */}
+      <mesh position={[-1.48, -0.581, -0.18]} rotation={[-Math.PI / 2, 0, 0]}>
+        <planeGeometry args={[0.16, 1.15]} />
+        <meshStandardMaterial color="#121216" roughness={0.9} metalness={0.1} />
       </mesh>
 
-      {keys}
-
-      {/* trackpad */}
-      <mesh position={[0, -0.515, 0.67]}>
-        <boxGeometry args={[1.12, 0.018, 0.47]} />
-        <meshStandardMaterial color="#29292e" metalness={0.72} roughness={0.22} />
+      {/* Precision Micro-Drilled Right Speaker Grille */}
+      <mesh position={[1.48, -0.581, -0.18]} rotation={[-Math.PI / 2, 0, 0]}>
+        <planeGeometry args={[0.16, 1.15]} />
+        <meshStandardMaterial color="#121216" roughness={0.9} metalness={0.1} />
       </mesh>
 
-      {/* hinge */}
-      <mesh position={[0, -0.49, -0.86]}>
-        <cylinderGeometry args={[0.075, 0.075, 2.55, 24]} />
-        <meshStandardMaterial color="#111114" metalness={0.9} roughness={0.2} />
+      {/* ── Precision Force Touch Glass Trackpad ── */}
+      {/* Outer hairline border */}
+      <RoundedBox
+        args={[1.36, 0.004, 0.76]}
+        radius={0.035}
+        smoothness={4}
+        position={[0, -0.581, 0.64]}
+      >
+        <meshStandardMaterial color="#353540" metalness={0.8} roughness={0.25} />
+      </RoundedBox>
+
+      {/* Glass Trackpad Surface */}
+      <RoundedBox
+        args={[1.34, 0.006, 0.74]}
+        radius={0.032}
+        smoothness={4}
+        position={[0, -0.578, 0.64]}
+      >
+        <meshStandardMaterial
+          color="#1e1e24"
+          metalness={0.85}
+          roughness={0.12}
+          envMapIntensity={1.5}
+        />
+      </RoundedBox>
+
+      {/* ── Bottom Silicone Feet ── */}
+      {(
+        [
+          [-1.38, -0.66, -0.85],
+          [1.38, -0.66, -0.85],
+          [-1.38, -0.66, 0.95],
+          [1.38, -0.66, 0.95],
+        ] as [number, number, number][]
+      ).map(([x, y, z], i) => (
+        <mesh key={`foot-${i}`} position={[x, y, z]} rotation={[Math.PI / 2, 0, 0]}>
+          <circleGeometry args={[0.052, 24]} />
+          <meshStandardMaterial color="#08080a" roughness={0.95} metalness={0.02} />
+        </mesh>
+      ))}
+
+      {/* ══════════════════════════════════════════════════════════════
+          2. SOLID STEEL DUAL-CAM HINGE
+          ══════════════════════════════════════════════════════════════ */}
+      <mesh position={[0, -0.54, -0.98]} rotation={[0, 0, Math.PI / 2]}>
+        <cylinderGeometry args={[0.034, 0.034, 2.92, 32]} />
+        <meshStandardMaterial color="#141418" metalness={0.98} roughness={0.1} />
       </mesh>
 
-      {/* display assembly */}
-      <group position={[0, 0.29, -0.84]} rotation={[-0.04, 0, 0]}>
-        <mesh>
-          <boxGeometry args={[2.96, 1.86, 0.095]} />
-          <meshStandardMaterial color="#151519" metalness={0.9} roughness={0.16} />
+      {/* ══════════════════════════════════════════════════════════════
+          3. RETINA DISPLAY LID (Slim MacBook Pro Edge-to-Edge Screen)
+          ══════════════════════════════════════════════════════════════ */}
+      <group position={[0, 0.42, -0.96]} rotation={[-0.14, 0, 0]}>
+        {/* Back Lid Enclosure */}
+        <RoundedBox
+          args={[3.38, 2.14, 0.042]}
+          radius={0.032}
+          smoothness={5}
+        >
+          <meshStandardMaterial
+            color="#18181e"
+            metalness={0.96}
+            roughness={0.14}
+            envMapIntensity={1.3}
+          />
+        </RoundedBox>
+
+        {/* Minimalist Embossed Logo on the back */}
+        <mesh position={[0, 0, -0.023]} rotation={[0, Math.PI, 0]}>
+          <circleGeometry args={[0.09, 32]} />
+          <meshStandardMaterial color="#2d2d38" metalness={1.0} roughness={0.05} />
         </mesh>
 
-        {/* black glass */}
-        <mesh position={[0, 0, 0.052]}>
-          <planeGeometry args={[2.74, 1.64]} />
+        {/* Glossy Black Bezel Frame */}
+        <mesh position={[0, 0, 0.022]}>
+          <planeGeometry args={[3.26, 2.02]} />
+          <meshStandardMaterial color="#040406" roughness={0.2} metalness={0.1} />
+        </mesh>
+
+        {/* High-Resolution Live Retina Display */}
+        <mesh position={[0, -0.015, 0.024]}>
+          <planeGeometry args={[3.18, 1.79, 1, 1]} />
           <meshStandardMaterial
             ref={screenGlow}
-            color="#050508"
-            emissive="#12082b"
-            emissiveIntensity={0.65}
-            metalness={0.15}
-            roughness={0.3}
+            map={screenMap ?? undefined}
+            color={screenMap ? "#ffffff" : "#0a0714"}
+            emissive="#0e0724"
+            emissiveIntensity={0.42}
+            metalness={0.02}
+            roughness={0.15}
+            toneMapped={false}
           />
         </mesh>
 
-        {/* webcam */}
-        <mesh position={[0, 0.855, 0.06]}>
-          <circleGeometry args={[0.025, 18]} />
-          <meshBasicMaterial color="#08080a" />
+        {/* Front Glass Specular Reflection Layer */}
+        <mesh position={[0, -0.015, 0.026]}>
+          <planeGeometry args={[3.18, 1.90]} />
+          <meshPhysicalMaterial
+            transparent
+            opacity={0.08}
+            roughness={0.05}
+            metalness={0.95}
+            reflectivity={0.9}
+            color="#a78bfa"
+          />
         </mesh>
 
-        {/* animated-looking Webryxo mini site */}
-        <group position={[0, 0, 0.064]}>
-          {/* browser/nav bar */}
-          <mesh position={[0, 0.68, 0]}>
-            <planeGeometry args={[2.58, 0.16]} />
-            <meshBasicMaterial color="#0b0b10" />
-          </mesh>
-          <mesh position={[-1.05, 0.68, 0.003]}>
-            <planeGeometry args={[0.28, 0.055]} />
-            <meshBasicMaterial color="#a78bfa" />
-          </mesh>
-          <mesh position={[0.55, 0.68, 0.003]}>
-            <planeGeometry args={[0.18, 0.025]} />
-            <meshBasicMaterial color="#71717a" />
-          </mesh>
-          <mesh position={[0.82, 0.68, 0.003]}>
-            <planeGeometry args={[0.18, 0.025]} />
-            <meshBasicMaterial color="#71717a" />
-          </mesh>
-          <mesh position={[1.08, 0.68, 0.003]}>
-            <planeGeometry args={[0.28, 0.07]} />
-            <meshBasicMaterial color="#fafafa" />
-          </mesh>
+        {/* Camera Notch Housing */}
+        <RoundedBox
+          args={[0.24, 0.065, 0.012]}
+          radius={0.014}
+          smoothness={3}
+          position={[0, 0.945, 0.026]}
+        >
+          <meshStandardMaterial color="#040406" roughness={0.6} metalness={0.1} />
+        </RoundedBox>
 
-          {/* hero copy */}
-          <mesh position={[-0.63, 0.34, 0.003]}>
-            <planeGeometry args={[0.92, 0.075]} />
-            <meshBasicMaterial color="#ffffff" />
-          </mesh>
-          <mesh position={[-0.72, 0.20, 0.003]}>
-            <planeGeometry args={[0.74, 0.075]} />
-            <meshBasicMaterial color="#c4b5fd" />
-          </mesh>
-          <mesh position={[-0.77, 0.03, 0.003]}>
-            <planeGeometry args={[0.64, 0.025]} />
-            <meshBasicMaterial color="#52525b" />
-          </mesh>
-          <mesh position={[-0.82, -0.05, 0.003]}>
-            <planeGeometry args={[0.54, 0.025]} />
-            <meshBasicMaterial color="#3f3f46" />
-          </mesh>
-          <mesh position={[-0.92, -0.20, 0.003]}>
-            <planeGeometry args={[0.34, 0.09]} />
-            <meshBasicMaterial color="#ffffff" />
-          </mesh>
+        {/* 1080p FaceTime Camera Lens (Iridescent Sapphire Reflection) */}
+        <mesh position={[0, 0.945, 0.034]}>
+          <circleGeometry args={[0.016, 24]} />
+          <meshStandardMaterial
+            color="#0b132b"
+            emissive="#1d4ed8"
+            emissiveIntensity={0.3}
+            metalness={0.9}
+            roughness={0.1}
+          />
+        </mesh>
+        <mesh position={[0, 0.945, 0.036]}>
+          <circleGeometry args={[0.008, 16]} />
+          <meshBasicMaterial color="#000000" />
+        </mesh>
 
-          {/* visual card */}
-          <mesh position={[0.72, 0.10, 0.003]}>
-            <planeGeometry args={[0.86, 0.82]} />
-            <meshBasicMaterial color="#17121f" />
-          </mesh>
-          <mesh position={[0.72, 0.10, 0.006]}>
-            <circleGeometry args={[0.28, 48]} />
-            <meshBasicMaterial color="#6d28d9" />
-          </mesh>
-          <mesh position={[0.72, 0.10, 0.009]}>
-            <circleGeometry args={[0.16, 48]} />
-            <meshBasicMaterial color="#d8b4fe" />
-          </mesh>
-
-          {/* lower project cards */}
-          <mesh position={[-0.77, -0.55, 0.003]}>
-            <planeGeometry args={[0.68, 0.20]} />
-            <meshBasicMaterial color="#18181b" />
-          </mesh>
-          <mesh position={[0, -0.55, 0.003]}>
-            <planeGeometry args={[0.68, 0.20]} />
-            <meshBasicMaterial color="#21162e" />
-          </mesh>
-          <mesh position={[0.77, -0.55, 0.003]}>
-            <planeGeometry args={[0.68, 0.20]} />
-            <meshBasicMaterial color="#18181b" />
-          </mesh>
-        </group>
+        {/* Active Green Camera Indicator LED */}
+        <mesh position={[0.038, 0.945, 0.035]}>
+          <circleGeometry args={[0.004, 12]} />
+          <meshBasicMaterial color="#22c55e" />
+        </mesh>
       </group>
     </group>
   );
@@ -240,22 +1108,390 @@ function LaptopModel() {
 function HeroLaptop() {
   return (
     <Canvas
-      camera={{ position: [0, 0.35, 5.25], fov: 38 }}
-      dpr={[1, 1.75]}
-      gl={{ antialias: true, alpha: true }}
+      camera={{ position: [0, 0.25, 5.0], fov: 38 }}
+      dpr={[1, 2]}
+      gl={{ antialias: true, alpha: true, toneMapping: THREE.ACESFilmicToneMapping }}
     >
-      <ambientLight intensity={1.25} />
-      <directionalLight position={[4, 5, 5]} intensity={2.4} />
-      <pointLight position={[-3, 2, 3]} intensity={20} color="#7c3aed" />
-      <pointLight position={[3, -1, 2]} intensity={13} color="#c026d3" />
-      <pointLight position={[0, 2, -2]} intensity={8} color="#60a5fa" />
+      {/* Studio Lighting Setup */}
+      <ambientLight intensity={1.4} />
+      <directionalLight position={[6, 8, 6]} intensity={2.8} />
+      <directionalLight position={[-6, 4, -3]} intensity={1.5} color="#8b5cf6" />
+      
+      {/* Dynamic Colored Rim Lights matching Webryxo branding */}
+      <pointLight position={[-4, 2.5, 3]} intensity={22} color="#7c3aed" />
+      <pointLight position={[4, -1.5, 2.5]} intensity={16} color="#c026d3" />
+      <pointLight position={[0, 3.5, 2]} intensity={12} color="#60a5fa" />
 
-      <Float speed={1.25} rotationIntensity={0.04} floatIntensity={0.18}>
+      {/* Floating 3D Laptop */}
+      <Float speed={1.6} rotationIntensity={0.05} floatIntensity={0.22}>
         <LaptopModel />
       </Float>
 
+      {/* Ultra-soft Contact Ground Shadow */}
+      <ContactShadows
+        position={[0, -1.05, 0]}
+        opacity={0.65}
+        scale={8}
+        blur={2.0}
+        far={3.5}
+        color="#000000"
+      />
+
       <OrbitControls enableZoom={false} enablePan={false} enableRotate={false} />
     </Canvas>
+  );
+}
+
+/* -------------------------------------------------------------------------- */
+/*                        3D — SERVICES ORBIT (services section)              */
+/* -------------------------------------------------------------------------- */
+
+function OrbitSatellite({
+  radius,
+  speed,
+  offset,
+  color,
+  size = 0.24,
+}: {
+  radius: number;
+  speed: number;
+  offset: number;
+  color: string;
+  size?: number;
+}) {
+  const ref = useRef<THREE.Group>(null);
+
+  useFrame((state) => {
+    if (!ref.current) return;
+    const t = state.clock.elapsedTime * speed + offset;
+    ref.current.position.set(
+      Math.cos(t) * radius,
+      Math.sin(t * 0.6) * 0.65,
+      Math.sin(t) * radius
+    );
+    ref.current.rotation.y = t;
+    ref.current.rotation.x = t * 0.4;
+  });
+
+  return (
+    <group ref={ref}>
+      <RoundedBox args={[size, size, size * 0.28]} radius={0.045} smoothness={4}>
+        <meshStandardMaterial
+          color={color}
+          metalness={0.55}
+          roughness={0.28}
+          emissive={color}
+          emissiveIntensity={0.22}
+        />
+      </RoundedBox>
+    </group>
+  );
+}
+
+function ServicesOrbitScene() {
+  const coreRef = useRef<THREE.Mesh>(null);
+
+  useFrame((state, delta) => {
+    if (!coreRef.current) return;
+    coreRef.current.rotation.y += delta * 0.22;
+    coreRef.current.rotation.x += delta * 0.07;
+  });
+
+  const satellites = [
+    { color: "#a78bfa", radius: 1.7, speed: 0.34, offset: 0 },
+    { color: "#f0abfc", radius: 1.7, speed: 0.34, offset: 1.05 },
+    { color: "#818cf8", radius: 1.7, speed: 0.34, offset: 2.1 },
+    { color: "#c4b5fd", radius: 2.2, speed: -0.27, offset: 0.6 },
+    { color: "#e879f9", radius: 2.2, speed: -0.27, offset: 1.6 },
+    { color: "#a5b4fc", radius: 2.2, speed: -0.27, offset: 2.6 },
+  ];
+
+  return (
+    <>
+      <ambientLight intensity={1.1} />
+      <pointLight position={[3, 2, 3]} intensity={14} color="#7c3aed" />
+      <pointLight position={[-3, -2, 2]} intensity={10} color="#c026d3" />
+
+      <mesh ref={coreRef}>
+        <icosahedronGeometry args={[0.85, 1]} />
+        <meshStandardMaterial
+          color="#0d0d12"
+          emissive="#4c1d95"
+          emissiveIntensity={0.4}
+          wireframe
+        />
+      </mesh>
+
+      {satellites.map((s, i) => (
+        <OrbitSatellite key={i} {...s} />
+      ))}
+    </>
+  );
+}
+
+function ServicesOrbit3D() {
+  return (
+    <Canvas
+      camera={{ position: [0, 0.6, 5.2], fov: 40 }}
+      dpr={[1, 1.75]}
+      gl={{ antialias: true, alpha: true }}
+    >
+      <ServicesOrbitScene />
+    </Canvas>
+  );
+}
+
+/* -------------------------------------------------------------------------- */
+/*                     3D — PORTFOLIO DEVICES (work section)                  */
+/* -------------------------------------------------------------------------- */
+
+function BrowserPanel({
+  position,
+  baseRotationY,
+  color,
+  index,
+  hovered,
+}: {
+  position: [number, number, number];
+  baseRotationY: number;
+  color: string;
+  index: number;
+  hovered: number | null;
+}) {
+  const ref = useRef<THREE.Group>(null);
+
+  useFrame((state, delta) => {
+    if (!ref.current) return;
+    const t = state.clock.elapsedTime;
+    const isHovered = hovered === index;
+
+    ref.current.position.y =
+      position[1] + Math.sin(t * 0.6 + index * 1.4) * 0.12 + (isHovered ? 0.08 : 0);
+
+    ref.current.rotation.y = THREE.MathUtils.damp(
+      ref.current.rotation.y,
+      baseRotationY + (isHovered ? 0.4 : 0),
+      4,
+      delta
+    );
+
+    const targetScale = isHovered ? 1.08 : 1;
+    ref.current.scale.setScalar(
+      THREE.MathUtils.damp(ref.current.scale.x, targetScale, 5, delta)
+    );
+  });
+
+  return (
+    <group ref={ref} position={position}>
+      {/* device shell */}
+      <mesh>
+        <boxGeometry args={[1.55, 1.0, 0.06]} />
+        <meshStandardMaterial color="#0b0b10" metalness={0.65} roughness={0.32} />
+      </mesh>
+
+      {/* screen */}
+      <mesh position={[0, 0.02, 0.033]}>
+        <planeGeometry args={[1.4, 0.78]} />
+        <meshStandardMaterial
+          color={color}
+          emissive={color}
+          emissiveIntensity={hovered === index ? 0.4 : 0.22}
+        />
+      </mesh>
+
+      {/* browser chrome bar */}
+      <mesh position={[0, 0.44, 0.034]}>
+        <planeGeometry args={[1.4, 0.1]} />
+        <meshBasicMaterial color="#050508" />
+      </mesh>
+      <mesh position={[-0.6, 0.44, 0.036]}>
+        <circleGeometry args={[0.018, 12]} />
+        <meshBasicMaterial color="#ffffff" opacity={0.3} transparent />
+      </mesh>
+    </group>
+  );
+}
+
+function PortfolioDevicesScene({ hovered }: { hovered: number | null }) {
+  return (
+    <>
+      <ambientLight intensity={1.2} />
+      <pointLight position={[3, 3, 4]} intensity={16} color="#7c3aed" />
+      <pointLight position={[-3, -1, 3]} intensity={11} color="#c026d3" />
+
+      <BrowserPanel
+        position={[-1.55, 0.28, 0]}
+        baseRotationY={0.32}
+        color="#7c3aed"
+        index={0}
+        hovered={hovered}
+      />
+      <BrowserPanel
+        position={[0, -0.12, 0.45]}
+        baseRotationY={0}
+        color="#2563eb"
+        index={1}
+        hovered={hovered}
+      />
+      <BrowserPanel
+        position={[1.55, 0.28, 0]}
+        baseRotationY={-0.32}
+        color="#c026d3"
+        index={2}
+        hovered={hovered}
+      />
+    </>
+  );
+}
+
+function PortfolioDevices3D({ hovered }: { hovered: number | null }) {
+  return (
+    <Canvas
+      camera={{ position: [0, 0.35, 4.6], fov: 38 }}
+      dpr={[1, 1.75]}
+      gl={{ antialias: true, alpha: true }}
+    >
+      <PortfolioDevicesScene hovered={hovered} />
+    </Canvas>
+  );
+}
+
+/* -------------------------------------------------------------------------- */
+/*                 3D — TRANSFORM ORB (before/after section)                  */
+/* -------------------------------------------------------------------------- */
+
+function TransformOrbScene() {
+  const leftRef = useRef<THREE.Mesh>(null);
+  const rightRef = useRef<THREE.Mesh>(null);
+  const beamRef = useRef<THREE.Mesh>(null);
+
+  useFrame((state, delta) => {
+    const t = state.clock.elapsedTime;
+
+    if (leftRef.current) {
+      leftRef.current.rotation.y += delta * 0.3;
+      leftRef.current.rotation.x += delta * 0.1;
+    }
+
+    if (rightRef.current) {
+      rightRef.current.rotation.y -= delta * 0.4;
+      rightRef.current.rotation.x -= delta * 0.15;
+      rightRef.current.scale.setScalar(1 + Math.sin(t * 1.4) * 0.06);
+    }
+
+    if (beamRef.current) {
+      const mat = beamRef.current.material as THREE.MeshBasicMaterial;
+      mat.opacity = 0.22 + Math.sin(t * 2) * 0.14;
+    }
+  });
+
+  return (
+    <>
+      <ambientLight intensity={1} />
+      <pointLight position={[3, 2, 3]} intensity={12} color="#7c3aed" />
+      <pointLight position={[-3, -1, 2]} intensity={7} color="#9ca3af" />
+
+      <mesh ref={leftRef} position={[-1.6, 0, 0]}>
+        <icosahedronGeometry args={[0.55, 0]} />
+        <meshStandardMaterial color="#3f3f46" roughness={0.85} metalness={0.08} />
+      </mesh>
+
+      <mesh ref={beamRef} position={[0, 0, 0]} rotation={[0, 0, Math.PI / 2]}>
+        <cylinderGeometry args={[0.012, 0.012, 2.35, 8]} />
+        <meshBasicMaterial color="#a78bfa" transparent opacity={0.28} />
+      </mesh>
+
+      <mesh ref={rightRef} position={[1.6, 0, 0]}>
+        <icosahedronGeometry args={[0.6, 1]} />
+        <meshStandardMaterial
+          color="#7c3aed"
+          emissive="#a78bfa"
+          emissiveIntensity={0.5}
+          roughness={0.2}
+          metalness={0.6}
+        />
+      </mesh>
+    </>
+  );
+}
+
+function TransformOrb3D() {
+  return (
+    <Canvas
+      camera={{ position: [0, 0.3, 4.2], fov: 40 }}
+      dpr={[1, 1.75]}
+      gl={{ antialias: true, alpha: true }}
+    >
+      <TransformOrbScene />
+    </Canvas>
+  );
+}
+
+/* -------------------------------------------------------------------------- */
+/*                        BEFORE / AFTER COMPARISON SLIDER                    */
+/* -------------------------------------------------------------------------- */
+
+function BeforeAfterSlider() {
+  const [percent, setPercent] = useState(50);
+
+  return (
+    <div className="relative mx-auto max-w-3xl select-none overflow-hidden rounded-[30px] border border-white/10">
+      <div className="relative aspect-[16/10] w-full bg-[#e8e4da]">
+        <div className="absolute inset-0 flex flex-col justify-center p-8 text-black/70 sm:p-10">
+          <p className="font-serif text-xl italic sm:text-2xl">~ Joe&apos;s Place ~</p>
+          <div className="mt-6 h-px w-2/3 bg-black/20" />
+          <div className="mt-3 h-px w-1/2 bg-black/15" />
+          <div className="mt-3 h-px w-1/3 bg-black/10" />
+          <span className="mt-8 inline-flex w-fit rounded-md border border-black/15 px-3 py-1.5 text-xs text-black/50">
+            click
+          </span>
+          <p className="mt-10 text-[10px] text-black/30">© 2009 Joe&apos;s Place</p>
+        </div>
+        <span className="absolute left-4 top-4 rounded-full bg-black/70 px-3 py-1 text-xs text-white">
+          Before
+        </span>
+
+        <div
+          className="absolute inset-0 bg-[#0a0a0d]"
+          style={{ clipPath: `inset(0 0 0 ${percent}%)` }}
+        >
+          <div className="flex h-full flex-col justify-center p-8 sm:p-10">
+            <div className="flex flex-wrap items-center gap-4 text-xs text-white/45 sm:gap-6 sm:text-sm">
+              <span>Home</span>
+              <span>Menu</span>
+              <span>About</span>
+              <span className="rounded-full bg-violet-500 px-3 py-1 text-white">Book</span>
+            </div>
+            <h3 className="mt-8 text-2xl font-semibold text-white sm:mt-10 sm:text-3xl">
+              Welcome to Joe&apos;s Place
+            </h3>
+            <div className="mt-6 h-2 w-32 rounded-full bg-violet-500/60 sm:w-40" />
+          </div>
+          <span className="absolute right-4 top-4 rounded-full bg-violet-500 px-3 py-1 text-xs text-white">
+            After
+          </span>
+        </div>
+
+        <div
+          className="pointer-events-none absolute inset-y-0 w-0.5 bg-white/90"
+          style={{ left: `${percent}%` }}
+        >
+          <div className="absolute left-1/2 top-1/2 flex h-10 w-10 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-violet-500 text-white shadow-2xl">
+            <MousePointer2 size={16} />
+          </div>
+        </div>
+
+        <input
+          type="range"
+          min={0}
+          max={100}
+          value={percent}
+          onChange={(e) => setPercent(Number(e.target.value))}
+          className="absolute inset-0 h-full w-full cursor-ew-resize opacity-0"
+          aria-label="Compare before and after website design"
+        />
+      </div>
+    </div>
   );
 }
 
@@ -438,6 +1674,30 @@ const faqs = [
   { question: "What if I need something more advanced?", answer: "Custom forms, booking flows, integrations, e-commerce, extra pages, and other advanced features can be quoted based on the project." },
 ];
 
+const comparisonRows = [
+  { feature: "Professional Design", diy: "Limited" },
+  { feature: "Mobile Responsive", diy: "Depends" },
+  { feature: "SEO Foundation", diy: "Limited" },
+  { feature: "Performance Optimization", diy: "Depends" },
+  { feature: "Custom Design", diy: "Limited" },
+  { feature: "Support", diy: "Limited" },
+  { feature: "Business-focused", diy: "—" },
+];
+
+const contactSteps = [
+  "We review your request and learn about your business.",
+  "We reach out within one business day to start the conversation.",
+  "We discuss your goals, timeline, and what you need.",
+  "We design and build your website — you go live.",
+];
+
+const contactFaqs = [
+  { question: "How quickly will you respond?", answer: "We respond to all project requests within one business day." },
+  { question: "Do I need to have everything ready before contacting?", answer: "No. A general idea of your business and goals is enough to get started — we'll help fill in the rest together." },
+  { question: "Is there a consultation fee?", answer: "No. Your first conversation and website preview are free." },
+  { question: "What if I'm not sure what I need?", answer: "That's completely fine. Tell us about your business and we'll help figure out the right direction." },
+];
+
 const laptopImages = [
   { image: "/images/webryxo/1.jfif", href: "/work/barber" },
   { image: "/images/webryxo/2.jfif", href: "/work/auto" },
@@ -456,6 +1716,28 @@ export default function Home() {
   const [sending, setSending] = useState(false);
   const [formError, setFormError] = useState("");
   const [menuOpen, setMenuOpen] = useState(false);
+  const [hoveredProject, setHoveredProject] = useState<number | null>(null);
+  const [leadCount, setLeadCount] = useState<number | null>(null);
+  const prefersReducedMotion = useReducedMotion();
+
+  useEffect(() => {
+    let cancelled = false;
+
+    fetch("/api/stats")
+      .then((res) => res.json())
+      .then((data) => {
+        if (!cancelled && typeof data.count === "number") {
+          setLeadCount(data.count);
+        }
+      })
+      .catch(() => {
+        /* fail silently — stat is a nice-to-have, not critical */
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   const mouseX = useMotionValue(0);
   const mouseY = useMotionValue(0);
@@ -682,6 +1964,19 @@ export default function Home() {
             <span className="h-1 w-1 rounded-full bg-violet-400/60" />
             <span>Performance</span>
           </div>
+
+          {leadCount !== null && leadCount > 0 && (
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.4, duration: 0.6 }}
+              className="mt-7 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-4 py-2 text-xs normal-case tracking-normal text-white/50"
+            >
+              <UsersRound size={14} className="text-violet-300" />
+              {leadCount} {leadCount === 1 ? "business has" : "businesses have"}{" "}
+              requested a free website preview
+            </motion.div>
+          )}
         </motion.div>
 
         <motion.div
@@ -692,10 +1987,10 @@ export default function Home() {
             delay: 0.08,
             ease: [0.22, 1, 0.36, 1],
           }}
-          className="relative hidden h-[650px] lg:block"
+          className="relative hidden h-[680px] lg:block"
         >
-          <div className="absolute inset-[8%] rounded-full bg-violet-600/[0.12] blur-[120px]" />
-          <div className="absolute inset-x-[10%] bottom-[10%] h-24 rounded-full bg-fuchsia-500/[0.08] blur-[55px]" />
+          <div className="absolute inset-[8%] rounded-full bg-violet-600/[0.14] blur-[120px]" />
+          <div className="absolute inset-x-[10%] bottom-[10%] h-24 rounded-full bg-fuchsia-500/[0.1] blur-[60px]" />
 
           <div className="absolute inset-0">
             <HeroLaptop />
@@ -704,7 +1999,7 @@ export default function Home() {
           <motion.div
             animate={{ y: [0, -10, 0], rotate: [0, -1, 0] }}
             transition={{ duration: 5.5, repeat: Infinity, ease: "easeInOut" }}
-            className="absolute left-0 top-24 rounded-2xl border border-white/10 bg-black/45 p-4 shadow-2xl backdrop-blur-xl"
+            className="absolute left-0 top-20 rounded-2xl border border-white/10 bg-black/50 p-4 shadow-2xl backdrop-blur-xl"
           >
             <div className="flex items-center gap-3">
               <Code2 className="text-violet-300" size={20} />
@@ -718,7 +2013,7 @@ export default function Home() {
           <motion.div
             animate={{ y: [0, 12, 0], rotate: [0, 1, 0] }}
             transition={{ duration: 6.2, repeat: Infinity, ease: "easeInOut" }}
-            className="absolute bottom-24 right-0 rounded-2xl border border-white/10 bg-black/45 p-4 shadow-2xl backdrop-blur-xl"
+            className="absolute bottom-20 right-0 rounded-2xl border border-white/10 bg-black/50 p-4 shadow-2xl backdrop-blur-xl"
           >
             <div className="flex items-center gap-3">
               <Layers3 className="text-fuchsia-300" size={20} />
@@ -887,6 +2182,13 @@ export default function Home() {
               Tell us about your project
               <ArrowRight size={16} />
             </a>
+
+            {!prefersReducedMotion && (
+              <div className="relative mt-10 hidden h-[280px] lg:block">
+                <div className="absolute inset-[10%] rounded-full bg-violet-600/[0.1] blur-[90px]" />
+                <ServicesOrbit3D />
+              </div>
+            )}
           </div>
 
           <div className="space-y-4">
@@ -1010,6 +2312,13 @@ export default function Home() {
               Start a Project
               <ArrowRight size={16} />
             </a>
+
+            {!prefersReducedMotion && (
+              <div className="relative mt-10 hidden h-[260px] lg:block">
+                <div className="absolute inset-[12%] rounded-full bg-violet-600/[0.1] blur-[90px]" />
+                <PortfolioDevices3D hovered={hoveredProject} />
+              </div>
+            )}
           </div>
 
           <div className="grid gap-5 sm:grid-cols-2">
@@ -1028,6 +2337,8 @@ export default function Home() {
                     delay: index * 0.07,
                   }}
                   whileHover={{ y: -8 }}
+                  onMouseEnter={() => setHoveredProject(index)}
+                  onMouseLeave={() => setHoveredProject(null)}
                   className={`group relative overflow-hidden rounded-[30px] border border-white/10 bg-white/[0.025] p-7 ${
                     index === 2 ? "sm:col-span-2" : ""
                   }`}
@@ -1083,6 +2394,41 @@ export default function Home() {
             })}
           </div>
         </div>
+      </section>
+
+      {/* Before / After Transformation */}
+      <section className="relative z-10 mx-auto max-w-5xl px-6 py-28">
+        <div className="text-center">
+          <div className="mx-auto inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-4 py-2 text-sm text-white/60">
+            <Sparkles size={15} className="text-violet-300" />
+            The transformation
+          </div>
+
+          <h2 className="mt-6 text-4xl font-semibold tracking-[-0.045em] sm:text-5xl md:text-6xl">
+            From ordinary to
+            <span className="block bg-gradient-to-r from-white via-violet-200 to-fuchsia-400 bg-clip-text text-transparent">
+              unforgettable.
+            </span>
+          </h2>
+
+          <p className="mx-auto mt-5 max-w-xl text-lg leading-8 text-white/45">
+            Drag the slider to see the difference a professionally designed website makes.
+          </p>
+        </div>
+
+        {!prefersReducedMotion && (
+          <div className="relative mx-auto mt-4 hidden h-[130px] max-w-md sm:block">
+            <TransformOrb3D />
+          </div>
+        )}
+
+        <div className="mt-8">
+          <BeforeAfterSlider />
+        </div>
+
+        <p className="mt-7 text-center text-sm text-white/35">
+          Every Webryxo website is rebuilt from the ground up — modern, fast, and built to convert.
+        </p>
       </section>
 
       {/* Pricing */}
@@ -1561,6 +2907,50 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Comparison — Webryxo vs. Typical DIY */}
+      <section id="comparison" className="relative z-10 mx-auto max-w-5xl px-6 py-28">
+        <div className="text-center">
+          <div className="mx-auto inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-4 py-2 text-sm text-white/60">
+            <Layers3 size={15} className="text-violet-300" />
+            The difference
+          </div>
+
+          <h2 className="mt-6 text-4xl font-semibold tracking-[-0.045em] sm:text-5xl md:text-6xl">
+            Webryxo vs.
+            <span className="block text-white/35">typical DIY website.</span>
+          </h2>
+
+          <p className="mx-auto mt-5 max-w-xl text-lg leading-8 text-white/45">
+            See why a professionally built website outperforms a do-it-yourself builder.
+          </p>
+        </div>
+
+        <div className="mt-14 overflow-hidden rounded-[30px] border border-white/10 bg-white/[0.025]">
+          <div className="grid grid-cols-[1.4fr_1fr_1fr] items-center gap-2 border-b border-white/10 px-6 py-4 text-xs uppercase tracking-[0.14em] sm:px-8 sm:text-sm">
+            <span className="text-white/35">Feature</span>
+            <span className="text-center font-medium text-violet-300">Webryxo</span>
+            <span className="text-center text-white/35">Typical DIY</span>
+          </div>
+
+          {comparisonRows.map((row, i) => (
+            <div
+              key={row.feature}
+              className={`grid grid-cols-[1.4fr_1fr_1fr] items-center gap-2 px-6 py-4 text-sm sm:px-8 ${
+                i !== comparisonRows.length - 1 ? "border-b border-white/[0.06]" : ""
+              }`}
+            >
+              <span className="text-white/70">{row.feature}</span>
+              <span className="flex justify-center">
+                <span className="flex h-6 w-6 items-center justify-center rounded-full bg-violet-400/15">
+                  <Check size={13} className="text-violet-300" />
+                </span>
+              </span>
+              <span className="text-center text-white/35">{row.diy}</span>
+            </div>
+          ))}
+        </div>
+      </section>
+
       {/* FAQ */}
       <section id="faq" className="relative z-10 mx-auto max-w-7xl px-6 py-32">
         <div className="grid gap-14 lg:grid-cols-[0.78fr_1.22fr]">
@@ -1711,6 +3101,22 @@ export default function Home() {
                 Share a few details about your business, what you need, and
                 what you want your website to accomplish.
               </p>
+
+              <div className="mt-8 rounded-2xl border border-white/10 bg-black/20 p-5">
+                <p className="text-xs uppercase tracking-[0.18em] text-white/25">
+                  What happens next
+                </p>
+                <ol className="mt-3 space-y-3">
+                  {contactSteps.map((step, index) => (
+                    <li key={step} className="flex items-start gap-3 text-sm text-white/60">
+                      <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-violet-400/15 text-[11px] font-medium text-violet-300">
+                        {index + 1}
+                      </span>
+                      <span className="leading-6">{step}</span>
+                    </li>
+                  ))}
+                </ol>
+              </div>
             </div>
 
             <div className="mt-12 space-y-4">
@@ -1887,6 +3293,32 @@ export default function Home() {
                 )}
               </form>
             )}
+          </div>
+        </div>
+
+        <div className="mt-14">
+          <h3 className="mb-6 text-center text-2xl font-semibold tracking-[-0.03em]">
+            Contact FAQ
+          </h3>
+
+          <div className="mx-auto max-w-2xl space-y-3">
+            {contactFaqs.map((faq) => (
+              <details
+                key={faq.question}
+                className="group overflow-hidden rounded-2xl border border-white/10 bg-white/[0.025]"
+              >
+                <summary className="flex cursor-pointer list-none items-center justify-between gap-4 px-5 py-4 text-left text-sm font-medium sm:text-base">
+                  {faq.question}
+                  <ChevronDown
+                    size={16}
+                    className="shrink-0 text-white/40 transition group-open:rotate-180"
+                  />
+                </summary>
+                <div className="border-t border-white/[0.06] px-5 py-4">
+                  <p className="text-sm leading-6 text-white/45">{faq.answer}</p>
+                </div>
+              </details>
+            ))}
           </div>
         </div>
       </section>
