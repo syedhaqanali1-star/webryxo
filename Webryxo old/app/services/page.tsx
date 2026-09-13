@@ -97,7 +97,7 @@ const services = [
     description:
       "Ongoing support to keep your website online, updated, and functioning properly after launch.",
     features: [
-      "$15 monthly or $150 yearly",
+      "$10 monthly or $100 yearly",
       "Hosting management",
       "Minor content updates",
       "Technical support",

@@ -14,20 +14,20 @@ const packages = [
   {
     value: "Starter",
     name: "Starter",
-    price: "$299",
+    price: "$99",
     description: "Best for a simple 1–3 page business website.",
   },
   {
     value: "Business",
     name: "Business",
-    price: "$499",
+    price: "$299",
     description: "Best for a more complete business website.",
     popular: true,
   },
   {
     value: "Premium",
     name: "Premium",
-    price: "$799",
+    price: "$499",
     description: "Best for custom pages, features, and advanced design.",
   },
 ];

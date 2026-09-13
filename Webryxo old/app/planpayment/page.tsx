@@ -15,7 +15,7 @@ const websitePlans = [
   {
     id: "starter",
     name: "Starter",
-    price: "$299",
+    price: "$99",
     description: "A professional website for a small business or new brand.",
     features: [
       "Up to 5 pages",
@@ -29,7 +29,7 @@ const websitePlans = [
   {
     id: "business",
     name: "Business",
-    price: "$499",
+    price: "$299",
     description: "A more complete website for a growing local business.",
     features: [
       "Up to 10 pages",
@@ -44,7 +44,7 @@ const websitePlans = [
   {
     id: "premium",
     name: "Premium",
-    price: "$799",
+    price: "$499",
     description: "A custom solution with advanced design and functionality.",
     features: [
       "Custom page structure",

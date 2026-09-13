@@ -17,7 +17,7 @@ const hostingPlans = [
   {
     id: "monthly",
     name: "Monthly Hosting",
-    price: "$15",
+    price: "$10",
     period: "/ month",
     description:
       "Flexible monthly hosting with SSL, backups, monitoring, updates, and ongoing maintenance.",
@@ -33,7 +33,7 @@ const hostingPlans = [
   {
     id: "annual",
     name: "Annual Hosting",
-    price: "$150",
+    price: "$100",
     period: "/ year",
     description:
       "One full year of hosting and maintenance at a discounted annual rate.",

@@ -1613,7 +1613,7 @@ const benefits = [
 const pricingPlans = [
   {
     name: "Starter",
-    price: "$299",
+    price: "$99",
     description:
       "A polished online presence for a small business that needs the essentials done right.",
     features: [
@@ -1628,7 +1628,7 @@ const pricingPlans = [
   },
   {
     name: "Business",
-    price: "$499",
+    price: "$299",
     description:
       "Our best fit for local businesses that want a stronger, more complete website.",
     features: [
@@ -1643,7 +1643,7 @@ const pricingPlans = [
   },
   {
     name: "Premium",
-    price: "$799",
+    price: "$499",
     description:
       "For businesses that need more custom pages, visuals, motion, or advanced functionality.",
     features: [
@@ -1668,7 +1668,7 @@ const processSteps = [
 const faqs = [
   { question: "Do I have to pay before seeing anything?", answer: "No. You can request a free website preview first. If you like the direction and want to move forward, we can continue with the paid project." },
   { question: "Who pays for the domain?", answer: "The domain is paid separately by the client. We can help connect it to the finished website." },
-  { question: "How much is hosting and maintenance?", answer: "Hosting and maintenance are $15 per month or $150 per year." },
+  { question: "How much is hosting and maintenance?", answer: "Hosting and maintenance are $10 per month or $100 per year." },
   { question: "Can I request changes?", answer: "Yes. You can give feedback during the project. The exact revision scope depends on the package and project requirements." },
   { question: "Can you redesign an existing website?", answer: "Yes. If you already have a website, Webryxo can create a more modern design and rebuild the experience around your current business needs." },
   { question: "What if I need something more advanced?", answer: "Custom forms, booking flows, integrations, e-commerce, extra pages, and other advanced features can be quoted based on the project." },
@@ -2550,14 +2550,14 @@ export default function Home() {
 
             <div className="mt-5 flex flex-wrap items-end gap-x-4 gap-y-2">
               <span className="text-4xl font-semibold tracking-[-0.04em]">
-                $15
+                $10
               </span>
               <span className="pb-1 text-white/35">/ month</span>
 
               <span className="mx-1 hidden h-7 w-px bg-white/10 sm:block" />
 
               <span className="text-4xl font-semibold tracking-[-0.04em]">
-                $150
+                $100
               </span>
               <span className="pb-1 text-white/35">/ year</span>
             </div>
